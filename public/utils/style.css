@@ -1,0 +1,33 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.login-container {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-login {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background: white;
+}
+.toggle-password {
+    cursor: pointer;
+}
+
+.orange-submit {
+    color: white;
+    background-color: orange;
+    cursor: pointer;
+}
+
+.admin-submit {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
