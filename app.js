@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const app = express();
 const path = require("path");
 const user = require("./routes/user");
+const campanha = require("./routes/campanhas");
 const session = require("express-session");
 const flash = require("connect-flash");
 const Passport = require("passport");
@@ -54,7 +55,13 @@ app.get("/", (req, res) => {
   res.redirect("/user/login");
 });
 
+// Routes
+app.get("/homepage", (req, res) => {
+  res.render("index");
+});
+
 app.use("/user", user);
+app.use("/campanha", campanha);
 
 // outros
 const port = 5678;

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.render("campa")
+router.get('/nova', (req, res) => {
+    res.render("campanha/formulario")
 })
+
+module.exports = router;

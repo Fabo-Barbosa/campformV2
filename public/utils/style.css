@@ -31,3 +31,7 @@ body {
     justify-content: space-between;
     margin-top: 10px;
 }
+
+.formulario-container {
+    background-color: white;
+}
