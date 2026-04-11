@@ -5,6 +5,7 @@ const app = express();
 const path = require("path");
 const user = require("./routes/user");
 const campanha = require("./routes/campanhas");
+const admin = require("./routes/admin");
 const isAuthenticated = require("./helpers/isAuthenticated");
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -64,6 +65,7 @@ app.get("/homepage", (req, res) => {
 });
 
 app.use("/campanha", campanha);
+app.use("/admin", admin);
 
 // outros
 const port = 5678;
