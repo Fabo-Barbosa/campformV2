@@ -5,6 +5,7 @@ const app = express();
 const path = require("path");
 const user = require("./routes/user");
 const campanha = require("./routes/campanhas");
+const isAuthenticated = require("./helpers/isAuthenticated");
 const session = require("express-session");
 const flash = require("connect-flash");
 const Passport = require("passport");
@@ -54,13 +55,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   res.redirect("/user/login");
 });
+app.use("/user", user);
+app.use(isAuthenticated);
 
 // Routes
 app.get("/homepage", (req, res) => {
   res.render("index");
 });
 
-app.use("/user", user);
 app.use("/campanha", campanha);
 
 // outros

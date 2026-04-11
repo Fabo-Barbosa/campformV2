@@ -1,7 +1,7 @@
 <h2 class="mb-4">Disparar Nova Campanha</h2>
 <div class="row justify-content-between">
-<div class="col-6 p-4 formulario-container">
-    <h4>Status do Contrato</h4>
+<form class="formulario-container p-4 col-6">
+    <h5>Status do Contrato</h5>
     <div class="form-row mb-4">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
@@ -22,17 +22,15 @@
     </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="inputEmail4">Email</label>
-      <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+      <label for="inputAtrasoInicial">Atraso inicial</label>
+      <input type="number" class="form-control" id="inputAtrasoInicial" placeholder="Inicio do intervalo">
     </div>
     <div class="form-group col-md-6">
-      <label for="inputPassword4">Password</label>
-      <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+      <label for="inputAtrasoFinal">Atraso final</label>
+      <input type="number" class="form-control" id="inputAtrasoFinal" placeholder="Final do intervalo">
     </div>
   </div>
-  <button type="submit" class="btn btn-success">Consultar Clientes</button>
-</div>
-<form class="formulario-container p-4 col-5">
+  <button class="btn btn-success mb-4">Consultar Clientes</button>
   <div class="form-group">
     <label for="conta">Conta</label>
     <select name="conta" id="conta" class="form-control">
@@ -86,6 +84,9 @@
       </label>
     </div>
   </div>
-  <button type="submit" class="btn btn-success">Sign in</button>
+  <button type="submit" class="btn btn-success">Disparar campanha</button>
 </form>
+<div class="col-5 p-4 formulario-container">
+
+</div>
 </div>
