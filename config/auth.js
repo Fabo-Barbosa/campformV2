@@ -13,14 +13,18 @@ module.exports = function (passport) {
       (username, password, done) => {
         User.findOne({ username: username }).then((user) => {
           if (!user) {
-            return done(null, false, { message: "Esta conta não existe!" });
+            return done(null, false, {
+              message: "Usuário ou senha incorretos...",
+            });
           }
 
           bcrypt.compare(password, user.hash, (erro, batem) => {
             if (batem) {
               return done(null, user);
             } else {
-              return done(null, { message: "Senha incorreta." });
+              return done(null, false, {
+                message: "Usuário ou senha incorretos...",
+              });
             }
           });
         });
@@ -29,7 +33,7 @@ module.exports = function (passport) {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user._id);
+    done(null, user.id);
   });
 
   passport.deserializeUser((id, done) => {

@@ -1,37 +1,52 @@
 body {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .login-container {
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .card-login {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    background: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: white;
 }
 .toggle-password {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .orange-submit {
-    color: white;
-    background-color: orange;
-    cursor: pointer;
+  color: white;
+  background-color: orange;
+  cursor: pointer;
 }
 
 .admin-submit {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 .formulario-container {
-    background-color: white;
+  background-color: white;
+}
+
+img,
+a {
+  margin: 0;
+  padding: 0;
+}
+
+.btn-delete {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: inherit; /* Mantém a cor do texto do container */
+  box-shadow: none; /* Remove sombras do Bootstrap 5 */
+  cursor: pointer;
 }

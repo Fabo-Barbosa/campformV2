@@ -1,5 +1,6 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
+const hbsHelpers = require("./helpers/handlebars");
 const mongoose = require("mongoose");
 const app = express();
 const path = require("path");
@@ -31,14 +32,17 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
-  res.locals.user = req.user || null;
+  res.locals.user = req.user ? req.user.toObject() : null;
   next();
 });
 // Body-Parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // handlebars
-app.engine("handlebars", engine({ defaultLayout: "main" }));
+app.engine(
+  "handlebars",
+  engine({ defaultLayout: "main", helpers: hbsHelpers }),
+);
 app.set("view engine", "handlebars");
 // Mongoose
 mongoose
@@ -54,7 +58,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/", (req, res) => {
-  res.redirect("/user/login");
+  if (user) res.redirect("/homepage");
+  else res.redirect("/user/login");
 });
 app.use("/user", user);
 app.use(isAuthenticated);

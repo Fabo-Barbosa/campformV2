@@ -1,14 +1,72 @@
 <div class="mb-4 d-flex justify-content-between">
-  <h2>Usuários do Sistema</h2>
-  <button>Novo</button>
+  <h2>Usuários do Sistema
+  </h2>
+  <a href="/admin/user/register">
+    <img src="/img/more.png"
+      width="30"
+      height="30" alt="Cadastrar novo usuário">
+  </a>
+
 </div>
-<div class="container">
-  <div class="row border p-2 bg-secondary">
-    <div class="col-1 text-white">Ação</div>
-    <div class="col-3 text-white">Nome</div>
-    <div class="col-2 text-white">Usuário</div>
-    <div class="col-4 text-white">Email</div>
-    <div class="col-1 text-white">Admin?</div>
-    <div class="col-1 text-white">Ativo?</div>
-  </div>
-</div>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-active">
+      <th class="col-1">Ação</th>
+      <th class="col-3">Nome</th>
+      <th class="col-2">Usuário</th>
+      <th class="col-4">Email</th>
+      <th class="col-1">Admin?</th>
+      <th class="col-1">Ativo?</th>
+    </tr>
+  </thead>
+  {{#each users}}
+    <tbody>
+      <tr>
+        <td class="col-1 d-flex">
+          {{> delete-button
+            deleteUrl=(concat "/admin/user/delete/" this._id)
+            itemName=this.name
+            itemType="usuário"
+          }}
+
+          <a href="/admin/user/edit/{{this._id}}">
+            <img src="/img/edit.png"
+            width="25"
+            height="25" alt="Editar cadastro">
+          </a>
+          </th>
+        <td class="col-3">{{this.name}}</th>
+        <td class="col-2">{{this.username}}</th>
+        <td class="col-4">{{this.email}}</th>
+        <td class="col-1">{{this.eAdmin}}</th>
+        <td class="col-1">{{this.active}}</th>
+      </tr>
+    </thead>
+  {{else}}
+  {{/each}}
+</table>
+{{#if users.length}}
+    <nav aria-label="Paginação">
+      <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item {{#unless hasPrevPage}}disabled{{/unless}}">
+          <a class="page-link" href="/items?page={{prevPage}}">Anterior</a>
+        </li>
+
+        <li class="page-item">
+          <span class="page-link">
+            Página {{currentPage}} de {{totalPages}}
+          </span>
+        </li>
+
+        <li class="page-item {{#unless hasNextPage}}disabled{{/unless}}">
+          <a class="page-link" href="/items?page={{nextPage}}">Próxima</a>
+        </li>
+
+      </ul>
+    </nav>
+  {{else}}
+    <div class="alert alert-info">
+      Nenhum item encontrado.
+    </div>
+  {{/if}}
