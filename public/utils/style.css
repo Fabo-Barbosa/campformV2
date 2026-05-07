@@ -1,5 +1,7 @@
 body {
-  background-color: #f8f9fa;
+  background: #f3f3f3;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1f2937;
 }
 
 .login-container {
@@ -42,6 +44,25 @@ a {
   padding: 0;
 }
 
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .btn-delete {
   background-color: transparent;
   border: none;
@@ -49,4 +70,145 @@ a {
   color: inherit; /* Mantém a cor do texto do container */
   box-shadow: none; /* Remove sombras do Bootstrap 5 */
   cursor: pointer;
+}
+
+.page-wrapper {
+  padding: 10px 0;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  color: #1f2937;
+}
+
+.campaign-card,
+.summary-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+}
+
+.campaign-card {
+  padding: 2rem;
+}
+
+.summary-card {
+  padding: 1.75rem;
+  height: 100%;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #1f2937;
+}
+
+.form-label.section-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.form-control {
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid #d6d9de;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  gap: 16px;
+}
+
+.status-option {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 12px;
+  background: #fafafa;
+  height: 100%;
+}
+
+.status-option .form-check-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.divider {
+  border-top: 1px solid #ececec;
+  margin: 1.5rem 0;
+}
+
+.summary-title {
+  color: #584233;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-block + .summary-block {
+  margin-top: 1.25rem;
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+
+.summary-value {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.summary-highlight {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.summary-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #b42318;
+}
+
+.summary-muted {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 991.98px) {
+  .status-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .campaign-card,
+  .summary-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
 }

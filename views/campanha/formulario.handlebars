@@ -1,132 +1,235 @@
-<h2 class="mb-4">Disparar Nova Campanha</h2>
-<div class="row justify-content-between">
-  <form class="formulario-container p-4 col-6">
-    <h5>Status do Contrato</h5>
-    <div class="form-row mb-4">
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="inlineCheckbox1"
-          value="option1"
-        />
-        <label class="form-check-label" for="inlineCheckbox1">Ativo</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="inlineCheckbox2"
-          value="option2"
-        />
-        <label class="form-check-label" for="inlineCheckbox2">Bloqueado</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="inlineCheckbox3"
-          value="option3"
-        />
-        <label class="form-check-label" for="inlineCheckbox3">Cancelado</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          id="inlineCheckbox4"
-          value="option4"
-        />
-        <label class="form-check-label" for="inlineCheckbox4">Suspenso</label>
-      </div>
+<div class="container page-wrapper">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="page-title">Criar e Enviar Campanhas</h1>
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputAtrasoInicial">Atraso inicial</label>
-        <input
-          type="number"
-          class="form-control"
-          id="inputAtrasoInicial"
-          placeholder="Inicio do intervalo"
-        />
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputAtrasoFinal">Atraso final</label>
-        <input
-          type="number"
-          class="form-control"
-          id="inputAtrasoFinal"
-          placeholder="Final do intervalo"
-        />
-      </div>
-    </div>
-    <button type="button" class="btn btn-success mb-4">Consultar Clientes</button>
-    <div class="form-group">
-      <label for="conta">Conta</label>
-      <select name="conta" id="conta" class="form-control">
-        <option value="" selected disabled>Selecione uma conta</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="fluxo">Fluxo RBX</label>
-      <select name="fluxo" id="fluxo" class="form-control">
-        <option value="" selected disabled>Selecione um fluxo</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="fila">Fila Matrix</label>
-      <select name="fila" id="fila" class="form-control">
-        <option value="" selected disabled>Selecione uma fila</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputEmail4">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="inputEmail4"
-          placeholder="Email"
-        />
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputPassword4">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="inputPassword4"
-          placeholder="Password"
-        />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputCity">City</label>
-        <input type="text" class="form-control" id="inputCity" />
-      </div>
-      <div class="form-group col-md-4">
-        <label for="inputState">State</label>
-        <select id="inputState" class="form-control">
-          <option selected>Choose...</option>
-          <option>...</option>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="inputZip">Zip</label>
-        <input type="text" class="form-control" id="inputZip" />
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck" />
-        <label class="form-check-label" for="gridCheck">
-          Check me out
-        </label>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-success">Disparar campanha</button>
-  </form>
-  <div class="col-5 p-4 formulario-container">
+  </div>
 
+  <div class="row g-4">
+    <!-- FORM PRINCIPAL -->
+    <div class="col-lg-7">
+      <div class="campaign-card">
+        <form action="/sua-rota-nextjs" method="POST" id="campaignForm">
+          <!-- PRIMEIROS CAMPOS -->
+          <div class="mb-4">
+            <label class="form-label section-label">Status de Contrato</label>
+
+            <div class="status-grid">
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="statusContrato"
+                    value="A"
+                    id="statusAtivo"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusAtivo"
+                  >Ativo</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="statusContrato"
+                    value="B"
+                    id="statusBloqueado"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusBloqueado"
+                  >Bloqueado</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="statusContrato"
+                    value="C"
+                    id="statusCancelado"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusCancelado"
+                  >Cancelado</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="statusContrato"
+                    value="S"
+                    id="statusSuspenso"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusSuspenso"
+                  >Suspenso</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="faixaInicial" class="form-label section-label">Faixa
+                  de Atraso Inicial</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="faixaInicial"
+                  name="faixaAtrasoInicial"
+                  placeholder="Ex: 1"
+                  min="0"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label for="faixaFinal" class="form-label section-label">Faixa
+                  de Atraso Final</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="faixaFinal"
+                  name="faixaAtrasoFinal"
+                  placeholder="Ex: 30"
+                  min="0"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÃO CONSULTAR -->
+          <div class="mb-4 d-grid d-md-flex">
+            <button
+              type="button"
+              class="btn btn-secondary px-4"
+              id="btnConsultar"
+            >
+              Consultar
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- RESTANTE DOS CAMPOS -->
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="conta" class="form-label section-label">Conta</label>
+              <select class="form-control mb-4" id="conta" name="conta">
+                <option value="" selected disabled>Selecione uma conta</option>
+                {{#each contas}}
+                  <option value="{{this._id}}">{{this.name}}</option>
+                {{else}}
+                  <option value="" selected disabled>Não há contas cadastradas.</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label for="fluxo" class="form-label section-label">Fluxo</label>
+              <select class="form-control mb-4" id="fluxo" name="fluxoMatrix">
+                <option value="" selected disabled>Selecione um fluxo do Matrix</option>
+
+              </select>
+            </div>
+            <div class="form-row col-12">
+              <div class="form-group col-md-6">
+                <label for="hsm" class="form-label section-label">Selecione o
+                  HSM</label>
+                <select class="form-control" id="hsm" name="hsm">
+                  <option value="">-- Selecione um HSM --</option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="divisoes" class="form-label section-label">Dividir e
+                  Agendar</label>
+                <select
+                  class="form-control"
+                  id="divisoes"
+                  name="divisoesAgendamentos"
+                >
+                  <option value="nao-dividir">Não dividir e disparar
+                    imediatamente</option>
+                  <option value="1">Agendar 1 disparo</option>
+                  <option value="2">Agendar 2 disparos</option>
+                  <option value="3">Agendar 3 disparos</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="1"
+                  id="salvarCampanha"
+                  name="salvarCampanha"
+                />
+                <label class="form-check-label" for="salvarCampanha">
+                  Salvar campanha?
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end mt-3">
+              <button type="submit" class="btn orange-submit px-4">
+                Iniciar Campanha
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIDEBAR / RESUMO -->
+    <div class="col-lg-5">
+      <div class="summary-card">
+        <h2 class="summary-title">Resumo da Campanha</h2>
+        <hr />
+
+        <div class="summary-block">
+          <span class="summary-label">Mensagem HSM Selecionada:</span>
+          <div class="summary-value">
+            <strong>Tipo:</strong>
+            N/A
+          </div>
+          <div class="summary-muted mt-2">
+            Selecione um HSM válido.
+          </div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Pré-Visualização de clientes:</span>
+          <div class="summary-muted" id="resumoClientesPreview">
+            Visualizar os primeiros nomes da consulta
+          </div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Pessoas na Consulta (Estimativa):</span>
+          <div class="summary-highlight" id="resumoTotalPessoas">0</div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Valor Estimado da Campanha (R$):</span>
+          <div class="summary-price">R$ 0,00</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const FluxoSchema = new Schema({
+const HsmSchema = new Schema({
   cod: {
     type: Number,
     required: true,
@@ -10,15 +10,25 @@ const FluxoSchema = new Schema({
     type: String,
     required: true,
   },
+  content: {
+    type: String,
+    required: true,
+  },
   conta: {
     type: Schema.Types.ObjectId,
     ref: "conta",
     required: true,
   },
-  description: {
+  type: {
     type: String,
+    enum: ["Marketing", "Utility", "Authentication"],
+    default: "Marketing",
     required: true,
+  },
+  variables: {
+    type: Object,
+    default: {},
   },
 });
 
-mongoose.model("fluxo", FluxoSchema);
+mongoose.model("hsm", HsmSchema);

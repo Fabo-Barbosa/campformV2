@@ -1,12 +1,12 @@
 <div class="row justify-content-center">
 <div class="col-10">
 <div class="mb-4 d-flex justify-content-between">
-  <h2 class="page-title">Usuários do Sistema
+  <h2 class="page-title">Fluxos do Matrix
   </h2>
-  <a href="/admin/user/register">
+  <a href="/admin/flow/register">
     <img src="/img/more.png"
       width="30"
-      height="30" alt="Cadastrar novo usuário">
+      height="30" alt="Cadastrar novo fluxo">
   </a>
 
 </div>
@@ -14,45 +14,43 @@
   <thead>
     <tr class="table-active">
       <th class="col-1">Ação</th>
+      <th class="col-1">Cod</th>
       <th class="col-3">Nome</th>
-      <th class="col-2">Usuário</th>
-      <th class="col-4">Email</th>
-      <th class="col-1">Admin?</th>
-      <th class="col-1">Ativo?</th>
+      <th class="col-4">Descrição</th>
+      <th class="col-3">Conta Vinculada</th>
     </tr>
   </thead>
-  {{#each users}}
+  {{#each flows}}
     <tbody>
       <tr>
         <td class="col-1 d-flex">
           {{> delete-button
-            deleteUrl=(concat "/admin/user/delete/" this._id)
+            deleteUrl=(concat "/admin/flow/delete/" this._id)
             itemName=this.name
-            itemType="usuário"
+            itemType="fluxo"
           }}
 
-          <a href="/admin/user/edit/{{this._id}}">
+          <a href="/admin/flow/edit/{{this._id}}">
             <img src="/img/edit.png"
             width="25"
-            height="25" alt="Editar cadastro">
+            height="25" alt="Editar fluxo">
           </a>
           </th>
+        <td class="col-1">{{this.cod}}</th>
         <td class="col-3">{{this.name}}</th>
-        <td class="col-2">{{this.username}}</th>
-        <td class="col-4">{{this.email}}</th>
-        <td class="col-1">{{this.eAdmin}}</th>
-        <td class="col-1">{{this.active}}</th>
+        <td class="col-4">{{this.description}}</th>
+        <td class="col-3">{{this.conta.name}}</th>
       </tr>
     </thead>
   {{else}}
   {{/each}}
 </table>
-{{#if users.length}}
+{{#if flows.length}}
     <nav aria-label="Paginação">
       <ul class="pagination justify-content-center mt-4">
 
         <li class="page-item {{#unless hasPrevPage}}disabled{{/unless}}">
-          <a class="page-link" href="/admin/user/list?page={{prevPage}}">Anterior</a>
+          <a class="page-link" href="/admin/flow/list?page={{prevPage}}">Anterior</a>
         </li>
 
         <li class="page-item">
@@ -62,7 +60,7 @@
         </li>
 
         <li class="page-item {{#unless hasNextPage}}disabled{{/unless}}">
-          <a class="page-link" href="/admin/user/list?page={{nextPage}}">Próxima</a>
+          <a class="page-link" href="/admin/flow/list?page={{nextPage}}">Próxima</a>
         </li>
 
       </ul>
@@ -73,4 +71,5 @@
     </div>
   {{/if}}
 </div>
+
 </div>

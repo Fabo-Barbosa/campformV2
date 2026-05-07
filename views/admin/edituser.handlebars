@@ -1,8 +1,10 @@
+<div class="row justify-content-center">
+<div class="col-8">
 {{#each erros}}
   <div class="alert alert-danger">{{this.texto}}</div>
 {{/each}}
 
-<h2 class="mb-4">Editar Usuário</h2>
+<h2 class="mb-4 page-title">Editar Usuário</h2>
 <div class="card border-light mb-3">
   <div class="card-body">
     <form action="/admin/user/edit" method="post">
@@ -52,7 +54,19 @@
       <div class="admin-submit">
         <div>
           <label for="inputEditEadmin">Administrador</label>
-          <input type="checkbox" name="eAdmin" id="inputEditEadmin" />
+          <input type="checkbox" name="eAdmin" id="inputEditEadmin" value=1
+          {{#if (eq _user.eAdmin 1)}}
+            checked
+          {{else}}
+          {{/if}}/>
+        </div>
+        <div>
+          <label for="inputEditAtivo">Ativo</label>
+          <input type="checkbox" name="ativo" id="inputEditAtivo" value="true"
+          {{#if (eq _user.Ativo True)}}
+            checked
+          {{else}}
+          {{/if}}/>
         </div>
         <button
           type="submit"
@@ -62,4 +76,6 @@
       </div>
     </form>
   </div>
+</div>
+</div>
 </div>

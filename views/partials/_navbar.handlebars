@@ -39,7 +39,7 @@
             <a class="dropdown-item" href="/campanha/nova">Nova Campanha</a>
             <a class="dropdown-item" href="#">Discador 3C</a>
             <a class="dropdown-item" href="#">Consultas Salvas</a>
-            <a class="dropdown-item" href="#">HSMs</a>
+            <a class="dropdown-item" href="/campanha/hsm/list">HSMs</a>
             <a class="dropdown-item" href="#">Histórico</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Relatórios</a>
@@ -68,6 +68,8 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             {{#if (eq user.eAdmin 1)}}
               <a class="dropdown-item" href="/admin/user/list">Usuários</a>
+              <a class="dropdown-item" href="/admin/account/list">Contas</a>
+              <a class="dropdown-item" href="/admin/flow/list">Flow</a>
             {{/if}}
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="/user/logout">Logout</a>

@@ -35,6 +35,7 @@ if (toggleBtn) {
   });
 }
 
+// Verifica se a senha cumpri com as regras estabelecidas
 function verifyPassword() {
   const passwordInput = document.getElementById("inputPassword");
   const registerBtn = document.getElementById("btnRegister");
@@ -65,6 +66,7 @@ function verifyPassword() {
   }
 }
 
+// Função exibir modal para confiramar exclusão de item
 document.addEventListener("DOMContentLoaded", () => {
   const deleteForm = document.getElementById("deleteConfirmForm");
   const deleteText = document.getElementById("deleteConfirmText");
@@ -80,3 +82,300 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// Exibe a camada de carregamento (overlay).
+function showLoading(title = "Enviando…", subtitle = "Aguarde um instante.") {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) {
+    // Atualiza a mensagem apenas se não for 'Enviando...' (para o webhook principal)
+    const textElement = loadingOverlay.querySelector(".loading-text");
+    const subElement = loadingOverlay.querySelector(".loading-sub");
+
+    if (textElement) textElement.textContent = title;
+    if (subElement) subElement.textContent = subtitle;
+
+    loadingOverlay.classList.remove("hidden");
+    loadingOverlay.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+// cria elementos em massa de acordo com argumentos passados
+function criarElementos(lista, idElementoPai, tagHtml) {
+  const elementoPai = document.getElementById(idElementoPai);
+
+  if (!elementoPai) {
+    console.error(`Elemento com id "${idElementoPai}" não encontrado.`);
+    return;
+  }
+
+  if (!Array.isArray(lista)) {
+    console.error("O primeiro argumento deve ser uma lista de objetos.");
+    return;
+  }
+
+  lista.forEach(({ value, content }) => {
+    const elemento = document.createElement(tagHtml);
+
+    if (value === "") {
+      elemento.setAttribute("selected", "");
+      elemento.setAttribute("disabled", "");
+    }
+
+    elemento.setAttribute("value", value);
+    elemento.textContent = content;
+
+    elementoPai.appendChild(elemento);
+  });
+}
+
+// limpa um determinado select passando o id como argumento
+function limparSelect(idElemento) {
+  const select = document.getElementById(idElemento);
+
+  if (!select) {
+    console.error(`Select com id "${idElemento}" não encontrado.`);
+    return;
+  }
+
+  select.innerHTML = "";
+}
+
+// cria uma lista value: v content: c para alimentar selects
+function mapearParaListaPadrao(lista, valueKey = "cod", contentKey = "name") {
+  if (!Array.isArray(lista)) return [];
+
+  return lista.map((item) => ({
+    value: item[valueKey],
+    content: item[contentKey],
+  }));
+}
+
+/**
+ * Oculta a camada de carregamento (overlay).
+ */
+function hideLoading() {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) {
+    loadingOverlay.classList.add("hidden");
+    loadingOverlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+}
+
+// Realiza a atualização do dom baseado em uma consulta do sql
+async function consultarCampanha() {
+  try {
+    const statusSelecionados = Array.from(
+      document.querySelectorAll('input[name="statusContrato"]:checked'),
+    ).map((item) => item.value);
+
+    const atrasoInicial = document.getElementById("faixaInicial")?.value;
+    const atrasoFinal = document.getElementById("faixaFinal")?.value;
+
+    if (!atrasoFinal || !atrasoInicial || statusSelecionados.length === 0) {
+      atualizaResumo([], 0);
+      return;
+    }
+
+    showLoading(
+      (title = "Consultando Clientes"),
+      (subtitle = "Aguarde enquanto a consulta é realizada..."),
+    );
+    const response = await fetch("/campanha/clientes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: statusSelecionados,
+        atrasoInicial: atrasoInicial,
+        atrasoFinal: atrasoFinal,
+      }),
+    });
+
+    hideLoading();
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Erro na consulta");
+    }
+    atualizaResumo(result.data.primeirosNomes, result.data.total);
+  } catch (error) {
+    console.error("Erro ao atualizar DOM:", error);
+  }
+}
+
+async function alimentarSelectsHsmEFluxoPorConta(valorSelecionado) {
+  const idSelectFluxos = "fluxo";
+  const idSelectHsms = "hsm";
+
+  limparSelect(idSelectFluxos);
+  limparSelect(idSelectHsms);
+
+  try {
+    const [resFluxos, resHsms] = await Promise.all([
+      fetch(`/campanha/fluxos/${valorSelecionado}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+      fetch(`/campanha/hsms/${valorSelecionado}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    ]);
+
+    if (!resFluxos.ok) {
+      throw new Error(`Erro ao buscar fluxos: ${resFluxos.status}`);
+    }
+
+    if (!resHsms.ok) {
+      throw new Error(`Erro ao buscar hsms: ${resHsms.status}`);
+    }
+
+    const fluxos = await resFluxos.json();
+    const hsms = await resHsms.json();
+
+    var listaFluxos = mapearParaListaPadrao(fluxos["data"], "_id", "name");
+    var listaHsms = mapearParaListaPadrao(hsms["data"], "_id", "name");
+
+    if (listaFluxos.length)
+      listaFluxos.push({ value: "", content: "Selecione um fluxo do Matrix" });
+    else
+      listaFluxos.push({
+        value: "",
+        content: "Não existem fluxos vinculados a conta selecionada",
+      });
+
+    if (listaHsms.length)
+      listaHsms.push({ value: "", content: "Selecione um hsm do Matrix" });
+    else
+      listaHsms.push({
+        value: "",
+        content: "Não existem hsms vinculados a conta selecionada",
+      });
+
+    criarElementos(listaFluxos, idSelectFluxos, "option");
+    criarElementos(listaHsms, idSelectHsms, "option");
+  } catch (error) {
+    console.error("Erro ao alimentar selects:", error);
+  }
+}
+
+function atualizaResumo(primeirosNomes, total) {
+  document.getElementById("resumoTotalPessoas").textContent = total;
+  // document.getElementById("resumoValorEstimado").textContent =
+  //   `R$ ${result.data.valorEstimado.toFixed(2).replace(".", ",")}`;
+  document.getElementById("resumoClientesPreview").innerHTML =
+    primeirosNomes.length > 0
+      ? primeirosNomes.map((nome) => `<div>${nome}</div>`).join("")
+      : "<div>Nenhum cliente encontrado.</div>";
+}
+
+async function atualizarVariaveisDoTextarea(textareaId, containerId) {
+  console.log(1);
+  const textarea = document.getElementById(textareaId);
+  const container = document.getElementById(containerId);
+
+  if (!textarea || !container) {
+    console.error("Textarea ou container não encontrado.");
+    return;
+  }
+
+  const regex = /{{\d+}}/g;
+  const matches = textarea.value.match(regex) || [];
+
+  const unicos = [...new Set(matches)];
+
+  if (unicos.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  try {
+    const response = await fetch("/campanha/hsm/variables", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+    const opcoes = result["data"];
+    let linhaAtual = null;
+
+    unicos.forEach((variavel, index) => {
+      if (index % 3 === 0) {
+        linhaAtual = document.createElement("div");
+        linhaAtual.className = "row mt-4";
+        container.appendChild(linhaAtual);
+      }
+
+      const coluna = document.createElement("div");
+      coluna.className = "col-4";
+
+      const label = document.createElement("label");
+      label.textContent = `Variável ${variavel}`;
+      label.setAttribute("for", `variavel_${index}`);
+
+      const select = document.createElement("select");
+      select.id = `variavel_${index}`;
+      select.name = `variaveis[${index}][campo]`;
+      select.className = "form-control";
+
+      const optionDefault = document.createElement("option");
+      optionDefault.value = "";
+      optionDefault.textContent = "Selecione";
+      select.appendChild(optionDefault);
+
+      opcoes.forEach(({ value, content }) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = content;
+        select.appendChild(option);
+      });
+
+      const hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.name = `variaveis[${index}][token]`;
+      hidden.value = variavel;
+
+      coluna.appendChild(label);
+      coluna.appendChild(select);
+      coluna.appendChild(hidden);
+
+      linhaAtual.appendChild(coluna);
+    });
+  } catch (error) {
+    console.error("Erro ao alimentar selects de variaveis:", error);
+  }
+}
+
+// Eventos
+document
+  .getElementById("btnConsultar")
+  ?.addEventListener("click", consultarCampanha);
+
+document.getElementById("conta")?.addEventListener("change", function () {
+  const valorSelecionado = this.value;
+
+  if (!valorSelecionado) {
+    limparSelect("fluxo");
+    limparSelect("hsm");
+    return;
+  }
+
+  alimentarSelectsHsmEFluxoPorConta(valorSelecionado);
+});
+
+document
+  .getElementById("inputContentHsm")
+  ?.addEventListener("input", function () {
+    atualizarVariaveisDoTextarea("inputContentHsm", "container-variaveis");
+  });

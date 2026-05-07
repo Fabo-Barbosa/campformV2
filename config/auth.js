@@ -18,6 +18,12 @@ module.exports = function (passport) {
             });
           }
 
+          if (!user.active) {
+            return done(null, false, {
+              message: "Usuário Inativo.",
+            });
+          }
+
           bcrypt.compare(password, user.hash, (erro, batem) => {
             if (batem) {
               return done(null, user);

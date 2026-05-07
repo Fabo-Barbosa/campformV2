@@ -1,0 +1,75 @@
+<div class="row justify-content-center">
+<div class="col-8">
+{{#each erros}}
+  <div class="alert alert-danger">{{this.texto}}</div>
+{{else}}
+{{/each}}
+
+<h2 class="mb-4 page-title">Cadastrar HSM</h2>
+<div class="card border-light mb-3">
+  <div class="card-body">
+    <form action="/campanha/hsm/register" method="post">
+      <div class="form-group">
+        <label for="inputCod">Código do Hsm</label>
+        <input
+          type="number"
+          class="form-control"
+          id="inputCod"
+          name="cod"
+          placeholder="Ex. 416"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="inputName">Nome</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputName"
+          name="name"
+          placeholder="Ex. Fluxo de Cobrança v1"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="inputContent">Conteúdo</label>
+        <textarea
+          class="form-control"
+          id="inputContentHsm"
+          name="content"
+          required></textarea>
+
+          <div id="container-variaveis"></div>
+      </div>
+      <div class="form-group">
+            <label for="selectType">Categoria</label>
+            <select class="form-control" id="selectType" name="type" required>
+                <option value="" selected disabled>Selecione a categoria.</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Utility">Utility</option>
+                <option value="Authentication">Authentication</option>
+            </select>
+      </div>
+      <div class="form-group">
+            <label for="selectAccount">Conta Vinculada</label>
+            <select class="form-control" id="selectAccount" name="conta" required>
+                <option value="" selected disabled>Qual conta está vinculada?</option>
+                {{#each contas}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                {{else}}
+                    <option value="" selected disabled>Não há contas cadastradas.</option>
+                {{/each}}
+            </select>
+      </div>
+
+        <button
+          type="submit"
+          id="btnRegister"
+          class="btn orange-submit"
+        >Registrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>

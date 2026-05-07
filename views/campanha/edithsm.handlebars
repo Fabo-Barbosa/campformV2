@@ -1,0 +1,77 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    {{#each erros}}
+      <div class="alert alert-danger">{{this.texto}}</div>
+    {{/each}}
+
+    <h2 class="mb-4 page-title">Editar HSM</h2>
+    <div class="card border-light mb-3">
+      <div class="card-body">
+        <form action="/campanha/hsm/edit" method="post">
+          <input type="hidden" name="id" value="{{hsm._id}}" />
+          <div class="form-group">
+            <label for="inputEditCod">Código Matrix</label>
+            <input
+              type="number"
+              class="form-control"
+              id="inputEditCod"
+              name="cod"
+              value="{{hsm.cod}}"
+              disabled
+            />
+          </div>
+          <div class="form-group">
+            <label for="inputEditName">Nome</label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputEditName"
+              name="name"
+              value="{{hsm.name}}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="inputEditContent">Conteúdo</label>
+            <textarea
+              class="form-control"
+              id="inputEditContent"
+              name="content"
+            />{{hsm.content}}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="selectType">Categoria</label>
+            <select class="form-control" id="selectType" name="type" required>
+                <option value="" selected disabled>Selecione a categoria.</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Utility">Utility</option>
+                <option value="Authentication">Authentication</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="selectAccount">Conta Vinculada</label>
+            <select
+              class="form-control"
+              id="selectAccount"
+              name="conta"
+              required
+            >
+              <option
+                value="{{hsm.conta._id}}"
+                selected
+              >{{hsm.conta.name}}</option>
+              {{#each contas}}
+                <option value="{{this._id}}">{{this.name}}</option>
+              {{else}}
+              {{/each}}
+            </select>
+          </div>
+          <button
+            type="submit"
+            id="btnEditUser"
+            class="btn orange-submit"
+          >Editar Fluxo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

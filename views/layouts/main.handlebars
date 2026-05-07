@@ -9,7 +9,7 @@
 </head>
 <body>
     {{>_navbar}}
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         {{#if error}}
             <div class="alert alert-danger">{{error}}</div>
         {{else}}
@@ -20,7 +20,8 @@
         {{{body}}}
         
     </div>
-        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <!-- Modal para confirmação de exclusão de elementos -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="deleteConfirmForm" method="POST">
@@ -45,6 +46,14 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- Overlay de carregamento (fora do shell para garantir a posição fixed) -->
+    <div id="loadingOverlay" class="loading-overlay hidden" aria-hidden="true">
+        <div class="loading-box" role="status" aria-live="polite">
+            <div class="loading-text">Enviando…</div>
+            <div class="loading-sub">Aguarde um instante.</div>
         </div>
     </div>
 </body>
