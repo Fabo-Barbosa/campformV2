@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const HsmClasse = require("../classes/HsmClasse");
+const CampanhaMatrix = require("../classes/CampanhaMatrix");
+const slotsCampanha = require("../classes/CampaignSlotManager");
+const Cliente = require("../classes/Cliente");
 const mongoose = require("mongoose");
 require("../models/Conta");
 const Account = mongoose.model("conta");
@@ -8,7 +11,7 @@ require("../models/Hsm");
 const Hsm = mongoose.model("hsm");
 require("../models/Fluxo");
 const Flow = mongoose.model("fluxo");
-const { consultarResumoCampanha } = require("../services/campanhaHsmService");
+const { consultarResumoCampanha } = require("../services/querieRbxServices");
 
 // Formulário princiapl
 router.get("/nova", (req, res) => {
@@ -20,7 +23,11 @@ router.get("/nova", (req, res) => {
         .sort({ createdAt: -1 })
         .lean()
         .then((fluxos) => {
-          res.render("campanha/formulario", { contas: contas, fluxos: fluxos });
+          res.render("campanha/formulario", {
+            contas: contas,
+            fluxos: fluxos,
+            sendtypes: CampanhaMatrix.TYPE,
+          });
         })
         .catch((err) => {
           req.flash("error_msg", "Falha ao carregar fluxos matrix.");
@@ -128,12 +135,18 @@ router.post("/hsm/register", (req, res) => {
           );
           res.redirect("/campanha/hsm/register");
         } else {
+          var variaveis = {};
+
+          req.body.variaveis.forEach((v) => {
+            variaveis[v.token] = v.campo;
+          });
           const newHsm = {
             cod: req.body.cod,
             name: req.body.name,
             content: req.body.content,
             conta: req.body.conta,
             type: req.body.type,
+            variables: variaveis,
           };
 
           new Hsm(newHsm)
@@ -160,11 +173,13 @@ router.get("/hsm/edit/:id", (req, res) => {
     .then((accounts) => {
       Hsm.findOne({ _id: req.params.id })
         .populate("conta")
-        .sort({ createdAt: -1 })
         .lean()
         .then((hsm) => {
           accounts = accounts.filter((conta) => conta.cod !== hsm.conta.cod);
-          res.render("campanha/edithsm", { hsm: hsm, contas: accounts });
+          res.render("campanha/edithsm", {
+            hsm: hsm,
+            contas: accounts,
+          });
         })
         .catch((err) => {
           req.flash("error_msg", "Hsm não encontrado.");
@@ -173,9 +188,108 @@ router.get("/hsm/edit/:id", (req, res) => {
     });
 });
 
+router.post("/hsm/edit", (req, res) => {
+  Hsm.findOne({ _id: req.body.id })
+    .populate("conta")
+    .then((hsm) => {
+      const erros = [];
+
+      if (
+        !req.body.name ||
+        typeof req.body.name == undefined ||
+        req.body.name == null
+      )
+        erros.push({ texto: "Nome inválido!" });
+      if (
+        !req.body.conta ||
+        typeof req.body.conta == undefined ||
+        req.body.conta == ""
+      )
+        erros.push({ texto: "Conta vazia!" });
+
+      if (erros.length > 0) {
+        Account.find({})
+          .sort({ createdAt: -1 })
+          .lean()
+          .then((accounts) => {
+            accounts = accounts.filter((conta) => conta.cod !== hsm.conta.cod);
+            res.render("campanha/edithsm", {
+              erros: erros,
+              hsm: hsm.toObject(),
+              contas: accounts,
+            });
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Erro ao tentar carregar as contas.");
+            res.redirect("/campanha/hsm/list");
+          });
+      } else {
+        hsm.name = req.body.name;
+        hsm.type = req.body.type;
+        hsm.conta = req.body.conta;
+
+        var variaveis = {};
+
+        if (req.body.variaveis)
+          req.body.variaveis.forEach((v) => {
+            variaveis[v.token] = v.campo;
+          });
+
+        hsm.variables = variaveis;
+
+        hsm
+          .save()
+          .then(() => {
+            req.flash("success_msg", "Hsm editado com sucesso.");
+            res.redirect("/campanha/hsm/list");
+          })
+          .catch((err) => {
+            req.flash(
+              "error_msg",
+              "Ocorreu um erro ao tentar salvar as alterações do hsm.",
+            );
+            res.redirect("/campanha/hsm/list");
+          });
+      }
+    })
+    .catch((err) => {
+      req.flash(
+        "error_msg",
+        "Ocorreu um erro no servidor. Tente novamente mais tarde: " + err,
+      );
+      res.redirect("/campanha/hsm/list");
+    });
+});
+
+router.post("/hsm/delete/:id", (req, res) => {
+  Hsm.deleteOne({ _id: req.params.id })
+    .then(() => {
+      req.flash("success_msg", "Hsm deletado com sucesso.");
+      res.redirect("/campanha/hsm/list");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Falha ao deletar o hsm.");
+      res.redirect("/campanha/hsm/list");
+    });
+});
+
 // Endpoints de retorno de dados
 router.post("/clientes", async (req, res) => {
   try {
+    // Verificação de slots de campanha
+    const userId = res.locals.user._id;
+    const slot = slotsCampanha.ocuparPosicao(userId.toString());
+    if (!slot) {
+      console.error("Slots de campanhas indisponíveis", error);
+
+      return res.status(226).json({
+        success: false,
+        message: "Aguarde até que um slot seja liberado.",
+      });
+    }
+
+    if (slot.reutilizada) slot.campanha.reset();
+
     const filtros = {
       status: req.body.status || [],
       atrasoInicial: Number(req.body.atrasoInicial || 0),
@@ -184,9 +298,34 @@ router.post("/clientes", async (req, res) => {
 
     const resultado = await consultarResumoCampanha(filtros);
 
+    resultado.data.forEach((c) => {
+      slot.campanha.adicionarCliente(
+        new Cliente(
+          c.Codigo,
+          c.Nome,
+          c.CNPJ_CNPF,
+          c.Email,
+          c.TelCelular,
+          c.UF,
+          c.Cidade,
+          c.Bairro,
+          c.Endereco,
+          c.CEP,
+          c.Numero,
+          c.Complemento,
+        ),
+      );
+    });
+
     return res.json({
       success: true,
-      data: resultado,
+      slotKey: slot.chave,
+      data: {
+        total: resultado.total,
+        primeirosNomes: resultado.data
+          .slice(0, 10)
+          .map((cliente) => cliente.Nome),
+      },
     });
   } catch (error) {
     console.error("Erro na rota /api/campanhas:", error);
@@ -270,6 +409,45 @@ router.get("/hsm/:id", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Erro ao consultar hsm",
+    });
+  }
+});
+
+router.get("count/campaign/:slot", async (req, res) => {
+  try {
+    const campaign = slotsCampanha.obterCampanha(req.params.slot);
+    const count = campaign.quantidadeClientes();
+
+    return res.json({
+      success: true,
+      count: count,
+    });
+  } catch (error) {
+    console.error("Erro na rota /count/campaign", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Erro ao consultar quantidade de clientes",
+    });
+  }
+});
+
+router.get("/price/count/:count/hsm/:id", async (req, res) => {
+  try {
+    const hsm = await Hsm.findOne({ cod: req.params.id }).lean();
+    const category = HsmClasse.CATEGORIES.find((cat) => cat.name === hsm.type);
+    const price = category.price * req.params.count;
+
+    return res.json({
+      success: true,
+      value: price,
+    });
+  } catch (error) {
+    console.error("Erro na rota price/count/hsm", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Erro ao consultar valor total",
     });
   }
 });

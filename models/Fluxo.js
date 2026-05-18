@@ -19,6 +19,10 @@ const FluxoSchema = new Schema({
     type: String,
     required: true,
   },
+  variables: {
+    type: Object,
+    default: {},
+  },
 });
 
 mongoose.model("fluxo", FluxoSchema);

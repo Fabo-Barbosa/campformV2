@@ -8,7 +8,7 @@
 <h2 class="mb-4 page-title">Cadastrar Fluxo</h2>
 <div class="card border-light mb-3">
   <div class="card-body">
-    <form action="/admin/flow/register" method="post">
+    <form action="/admin/flow/register" method="post" id="formCadastroFlow">
       <div class="form-group">
         <label for="inputCod">Código do Fluxo</label>
         <input
@@ -53,6 +53,45 @@
                 {{/each}}
             </select>
       </div>
+      <div class="mt-3">
+        <label class="form-label fw-semibold">Flow Variáveis</label>
+
+        <div class="dropdown mb-4">
+          <button
+            class="btn btn-outline-secondary btn-sm dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-expanded="false"
+          >
+            +
+          </button>
+
+          <div class="dropdown-menu">
+            <li>
+              <button class="dropdown-item" type="button" data-add-variable="text">
+                Adicionar texto
+              </button>
+            </li>
+
+            <li>
+              <button class="dropdown-item" type="button" data-add-variable="header">
+                Selecionar do cabeçalho da consulta
+              </button>
+            </li>
+          </div>
+        </div>
+
+        <div id="variablesContainer" class="variables-container"></div>
+
+        <input type="hidden" name="variables" id="variablesJson">
+      </div>
+
+      <template id="headerOptionsTemplate">
+        {{#each headersConsulta}}
+          <option value="#{{this.value}}">{{this.content}}</option>
+        {{/each}}
+      </template>
+
         <button
           type="submit"
           id="btnRegister"

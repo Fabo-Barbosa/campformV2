@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Cliente = require("../classes/Cliente");
 const mongoose = require("mongoose");
 require("../models/User");
 const User = mongoose.model("user");
@@ -470,7 +471,10 @@ router.get("/flow/register", eAdmin, (req, res) => {
   Account.find({})
     .lean()
     .then((accounts) => {
-      res.render("admin/registerflow", { contas: accounts });
+      res.render("admin/registerflow", {
+        contas: accounts,
+        headersConsulta: Cliente.headerFields,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Falha em carregar as contas.");
@@ -526,6 +530,7 @@ router.post("/flow/register", eAdmin, (req, res) => {
             name: req.body.name,
             description: req.body.description,
             conta: req.body.conta,
+            variables: JSON.parse(req.body.variables),
           };
 
           new Flow(newFlow)
@@ -556,7 +561,11 @@ router.get("/flow/edit/:id", eAdmin, (req, res) => {
         .lean()
         .then((flow) => {
           accounts = accounts.filter((conta) => conta.cod !== flow.conta.cod);
-          res.render("admin/editflow", { flow: flow, contas: accounts });
+          res.render("admin/editflow", {
+            flow: flow,
+            contas: accounts,
+            headersConsulta: Cliente.headerFields,
+          });
         })
         .catch((err) => {
           req.flash("error_msg", "Flow não encontrado.");
@@ -608,6 +617,7 @@ router.post("/flow/edit", eAdmin, (req, res) => {
         flow.name = req.body.name;
         flow.description = req.body.description;
         flow.conta = req.body.conta;
+        flow.variables = JSON.parse(req.body.variables);
 
         flow
           .save()

@@ -66,6 +66,32 @@ function verifyPassword() {
   }
 }
 
+// Remove ou adiciona a seleção de fluxos dependendo do tipo de envio
+const tipoEnvio = document?.getElementById("tipoenvio");
+tipoEnvio?.addEventListener("change", function () {
+  if (this.value == 2) {
+    document.querySelector(`label[for="fluxo"]`)?.remove();
+    document.querySelector(`#fluxo`)?.remove();
+  } else if (this.value == 1) {
+    const containerFluxo = document?.getElementById("containerFluxo");
+    const labelFluxo = document.createElement("label");
+    labelFluxo.className = "form-label section-label";
+    labelFluxo.setAttribute("for", "fluxo");
+    labelFluxo.textContent = "Fluxo";
+    containerFluxo.appendChild(labelFluxo);
+
+    const selectFluxo = document.createElement("select");
+    selectFluxo.className = "form-control mb-4";
+    selectFluxo.name = "fluxoMatrix";
+    selectFluxo.id = "fluxo";
+    selectFluxo.required = true;
+    containerFluxo.appendChild(selectFluxo);
+
+    const event = new Event("change");
+    document.querySelector(`#conta`).dispatchEvent(event);
+  }
+});
+
 // Função exibir modal para confiramar exclusão de item
 document.addEventListener("DOMContentLoaded", () => {
   const deleteForm = document.getElementById("deleteConfirmForm");
@@ -80,6 +106,150 @@ document.addEventListener("DOMContentLoaded", () => {
       deleteForm.action = deleteUrl;
       deleteText.textContent = `Tem certeza que deseja excluir o ${itemType} "${itemName}"?`;
     });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#formCadastroFlow");
+  const container = document.querySelector("#variablesContainer");
+  const hiddenVariablesInput = document.querySelector("#variablesJson");
+  const headerOptionsTemplate = document.querySelector(
+    "#headerOptionsTemplate",
+  );
+
+  if (!form || !container || !hiddenVariablesInput) {
+    return;
+  }
+
+  document.querySelectorAll(".variable-row").forEach((row) => {
+    row.querySelector(".btn-outline-danger").addEventListener("click", () => {
+      row.remove();
+    });
+  });
+
+  document.querySelectorAll(".select-variable-edit").forEach((s) => {
+    s.innerHTML += `${headerOptionsTemplate ? headerOptionsTemplate.innerHTML : ""}`;
+    const optionAtual = s.querySelector(".current-variable");
+    const optionAtualValue = optionAtual.value;
+    optionAtual.remove();
+    s.childNodes.forEach((op) => {
+      if (optionAtualValue == op.value) op.selected = true;
+    });
+  });
+
+  document.querySelectorAll("[data-add-variable]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const type = button.dataset.addVariable;
+      addVariableRow(type);
+    });
+  });
+
+  function addVariableRow(type) {
+    const row = document.createElement("div");
+    row.className = "variable-row row g-2 align-items-center mb-2";
+    row.dataset.variableRow = "true";
+
+    const keyColumn = document.createElement("div");
+    keyColumn.className = "col-md-5";
+
+    const valueColumn = document.createElement("div");
+    valueColumn.className = "col-md-5";
+
+    const actionColumn = document.createElement("div");
+    actionColumn.className = "col-md-2 d-grid";
+
+    const keyInput = document.createElement("input");
+    keyInput.type = "text";
+    keyInput.className = "form-control";
+    keyInput.placeholder = "Nome da variável";
+    keyInput.dataset.variableKey = "true";
+
+    keyColumn.appendChild(keyInput);
+
+    if (type === "text") {
+      const valueInput = document.createElement("input");
+      valueInput.type = "text";
+      valueInput.className = "form-control";
+      valueInput.placeholder = "Valor da variável";
+      valueInput.dataset.variableValue = "true";
+
+      valueColumn.appendChild(valueInput);
+    }
+
+    if (type === "header") {
+      const select = document.createElement("select");
+      select.className = "form-control";
+      select.dataset.variableValue = "true";
+
+      select.innerHTML = `
+        <option value="">Selecione uma coluna</option>
+        ${headerOptionsTemplate ? headerOptionsTemplate.innerHTML : ""}
+      `;
+
+      valueColumn.appendChild(select);
+    }
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "btn btn-outline-danger";
+    removeButton.textContent = "Remover";
+
+    removeButton.addEventListener("click", () => {
+      row.remove();
+    });
+
+    actionColumn.appendChild(removeButton);
+
+    row.appendChild(keyColumn);
+    row.appendChild(valueColumn);
+    row.appendChild(actionColumn);
+
+    container.appendChild(row);
+  }
+
+  form.addEventListener("submit", (event) => {
+    const variables = {};
+    const usedKeys = new Set();
+
+    const rows = container.querySelectorAll("[data-variable-row]");
+
+    for (const row of rows) {
+      const keyInput = row.querySelector("[data-variable-key]");
+      const valueInput = row.querySelector("[data-variable-value]");
+
+      const key = keyInput.value.trim();
+      const value = valueInput.value.trim();
+
+      if (!key && !value) {
+        continue;
+      }
+
+      if (!key) {
+        event.preventDefault();
+        alert("Informe o nome da variável.");
+        keyInput.focus();
+        return false;
+      }
+
+      if (!value) {
+        event.preventDefault();
+        alert(`Informe o valor da variável "${key}".`);
+        valueInput.focus();
+        return false;
+      }
+
+      if (usedKeys.has(key)) {
+        event.preventDefault();
+        alert(`A variavel "${key}" foi informada mais de uma vez.`);
+        keyInput.focus();
+        return false;
+      }
+
+      usedKeys.add(key);
+      variables[key] = value;
+    }
+
+    hiddenVariablesInput.value = JSON.stringify(variables);
   });
 });
 
@@ -130,15 +300,17 @@ function criarElementos(lista, idElementoPai, tagHtml) {
 }
 
 // limpa um determinado select passando o id como argumento
-function limparSelect(idElemento) {
+function limparSelect(idElemento, optionText = "") {
   const select = document.getElementById(idElemento);
 
   if (!select) {
     console.error(`Select com id "${idElemento}" não encontrado.`);
     return;
   }
-
   select.innerHTML = "";
+  if (optionText !== "") {
+    select.innerHTML = `<option value="">${optionText}</option>`;
+  }
 }
 
 // cria uma lista value: v content: c para alimentar selects
@@ -200,56 +372,31 @@ async function consultarCampanha() {
     if (!result.success) {
       throw new Error(result.message || "Erro na consulta");
     }
+    const slot = sessionStorage.setItem("slotKey", result.slotKey);
+
     atualizaResumo(result.data.primeirosNomes, result.data.total);
   } catch (error) {
     console.error("Erro ao atualizar DOM:", error);
   }
 }
 
-async function alimentarSelectsHsmEFluxoPorConta(valorSelecionado) {
-  const idSelectFluxos = "fluxo";
+async function alimentarSelectHsmPorConta(valorSelecionado) {
   const idSelectHsms = "hsm";
-
-  limparSelect(idSelectFluxos);
   limparSelect(idSelectHsms);
-
   try {
-    const [resFluxos, resHsms] = await Promise.all([
-      fetch(`/campanha/fluxos/${valorSelecionado}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-      fetch(`/campanha/hsms/${valorSelecionado}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-    ]);
-
-    if (!resFluxos.ok) {
-      throw new Error(`Erro ao buscar fluxos: ${resFluxos.status}`);
-    }
+    const resHsms = await fetch(`/campanha/hsms/${valorSelecionado}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!resHsms.ok) {
       throw new Error(`Erro ao buscar hsms: ${resHsms.status}`);
     }
 
-    const fluxos = await resFluxos.json();
     const hsms = await resHsms.json();
-
-    var listaFluxos = mapearParaListaPadrao(fluxos["data"], "_id", "name");
     var listaHsms = mapearParaListaPadrao(hsms["data"], "_id", "name");
-
-    if (listaFluxos.length)
-      listaFluxos.push({ value: "", content: "Selecione um fluxo do Matrix" });
-    else
-      listaFluxos.push({
-        value: "",
-        content: "Não existem fluxos vinculados a conta selecionada",
-      });
 
     if (listaHsms.length)
       listaHsms.push({ value: "", content: "Selecione um hsm do Matrix" });
@@ -259,8 +406,42 @@ async function alimentarSelectsHsmEFluxoPorConta(valorSelecionado) {
         content: "Não existem hsms vinculados a conta selecionada",
       });
 
-    criarElementos(listaFluxos, idSelectFluxos, "option");
     criarElementos(listaHsms, idSelectHsms, "option");
+  } catch (error) {
+    console.error("Erro ao alimentar selects:", error);
+  }
+}
+
+async function alimentarSelectFluxoPorConta(valorSelecionado) {
+  const idSelectFluxos = "fluxo";
+  limparSelect(idSelectFluxos);
+
+  try {
+    const resFluxos = await fetch(`/campanha/fluxos/${valorSelecionado}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!resFluxos.ok)
+      throw new Error(`Erro ao buscar fluxos: ${resFluxos.status}`);
+
+    const fluxos = await resFluxos.json();
+    var listaFluxos = mapearParaListaPadrao(fluxos["data"], "_id", "name");
+
+    if (listaFluxos.length)
+      listaFluxos.push({
+        value: "",
+        content: "Selecione um fluxo do Matrix",
+      });
+    else
+      listaFluxos.push({
+        value: "",
+        content: "Não existem fluxos vinculados a conta selecionada",
+      });
+
+    criarElementos(listaFluxos, idSelectFluxos, "option");
   } catch (error) {
     console.error("Erro ao alimentar selects:", error);
   }
@@ -268,8 +449,6 @@ async function alimentarSelectsHsmEFluxoPorConta(valorSelecionado) {
 
 function atualizaResumo(primeirosNomes, total) {
   document.getElementById("resumoTotalPessoas").textContent = total;
-  // document.getElementById("resumoValorEstimado").textContent =
-  //   `R$ ${result.data.valorEstimado.toFixed(2).replace(".", ",")}`;
   document.getElementById("resumoClientesPreview").innerHTML =
     primeirosNomes.length > 0
       ? primeirosNomes.map((nome) => `<div>${nome}</div>`).join("")
@@ -277,7 +456,6 @@ function atualizaResumo(primeirosNomes, total) {
 }
 
 async function atualizarVariaveisDoTextarea(textareaId, containerId) {
-  console.log(1);
   const textarea = document.getElementById(textareaId);
   const container = document.getElementById(containerId);
 
@@ -357,6 +535,129 @@ async function atualizarVariaveisDoTextarea(textareaId, containerId) {
   }
 }
 
+// Lógica de agendamento
+function obterDateTimeLocalMinimo() {
+  const agora = new Date();
+  agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+  return agora.toISOString().slice(0, 16);
+}
+
+function validarDataHoraFutura(input) {
+  if (!input || !input.value) {
+    input.setCustomValidity("Informe uma data e hora.");
+    return false;
+  }
+
+  const dataSelecionada = new Date(input.value);
+  const agora = new Date();
+
+  if (Number.isNaN(dataSelecionada.getTime())) {
+    input.setCustomValidity("Informe uma data e hora válida.");
+    return false;
+  }
+
+  if (dataSelecionada <= agora) {
+    input.setCustomValidity("A data e hora devem ser futuras.");
+    return false;
+  }
+
+  input.setCustomValidity("");
+  return true;
+}
+
+function criarInputAgendamento(indice) {
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.flexDirection = "column";
+  wrapper.style.flex = "1";
+  wrapper.style.minWidth = "180px";
+
+  const label = document.createElement("label");
+  label.setAttribute("for", `agendamento_${indice}`);
+  label.textContent = `Disparo ${indice + 1}`;
+
+  const input = document.createElement("input");
+  input.type = "datetime-local";
+  input.className = "form-control";
+  input.id = `agendamento_${indice}`;
+  input.name = `agendamentos[${indice}]`;
+  input.required = true;
+  input.min = obterDateTimeLocalMinimo();
+
+  input.addEventListener("input", function () {
+    validarDataHoraFutura(input);
+  });
+
+  input.addEventListener("change", function () {
+    validarDataHoraFutura(input);
+  });
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(input);
+
+  return wrapper;
+}
+
+function atualizarInputsAgendamento(selectId, containerId) {
+  const select = document.getElementById(selectId);
+  const container = document.getElementById(containerId);
+
+  if (!select) {
+    console.error(`Select com id "${selectId}" não encontrado.`);
+    return;
+  }
+
+  if (!container) {
+    console.error(`Container com id "${containerId}" não encontrado.`);
+    return;
+  }
+
+  const mapaQuantidade = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+  };
+
+  const quantidade = mapaQuantidade[select.value] ?? 0;
+
+  container.innerHTML = "";
+
+  if (quantidade === 0) {
+    return;
+  }
+
+  container.style.display = "flex";
+  container.style.gap = "10px";
+  container.style.flexWrap = "wrap";
+  container.style.alignItems = "flex-start";
+  container.style.marginTop = "10px";
+
+  for (let i = 0; i < quantidade; i++) {
+    container.appendChild(criarInputAgendamento(i));
+  }
+}
+
+function validarTodosAgendamentos(containerId) {
+  const container = document.getElementById(containerId);
+
+  if (!container) {
+    console.error(`Container com id "${containerId}" não encontrado.`);
+    return false;
+  }
+
+  const inputs = container.querySelectorAll('input[type="datetime-local"]');
+
+  for (const input of inputs) {
+    if (!validarDataHoraFutura(input)) {
+      input.reportValidity();
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Eventos
 document
   .getElementById("btnConsultar")
@@ -366,12 +667,17 @@ document.getElementById("conta")?.addEventListener("change", function () {
   const valorSelecionado = this.value;
 
   if (!valorSelecionado) {
-    limparSelect("fluxo");
-    limparSelect("hsm");
+    limparSelect("fluxo", "--Selecione um Fluxo--");
+    limparSelect("hsm", "--Selecione um HSM--");
     return;
   }
 
-  alimentarSelectsHsmEFluxoPorConta(valorSelecionado);
+  if (tipoEnvio.value == 2) {
+    alimentarSelectHsmPorConta(valorSelecionado);
+  } else if (tipoEnvio.value == 1) {
+    alimentarSelectHsmPorConta(valorSelecionado);
+    alimentarSelectFluxoPorConta(valorSelecionado);
+  }
 });
 
 document
@@ -379,3 +685,54 @@ document
   ?.addEventListener("input", function () {
     atualizarVariaveisDoTextarea("inputContentHsm", "container-variaveis");
   });
+
+document.getElementById("divisoes")?.addEventListener("change", function () {
+  atualizarInputsAgendamento("divisoes", "containerAgendamentos");
+});
+
+document
+  ?.getElementById("campaignForm")
+  ?.addEventListener("submit", function (event) {
+    const valido = validarTodosAgendamentos("containerAgendamentos");
+
+    if (!valido) {
+      event.preventDefault();
+      alert("Agendamento inválido.");
+      return false;
+    }
+  });
+
+window.onload = async function () {
+  // Lógica de alimentação de selects de variáveis na área de editar um hsm
+  // ######################################################################
+  const selectVariables = document.getElementsByClassName("variable_select");
+  if (selectVariables.length > 0) {
+    try {
+      const response = await fetch("/campanha/hsm/variables", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      const opcoes = result["data"];
+
+      Array.from(selectVariables).forEach((s) => {
+        const childInput = s.querySelector(".variable_input");
+        opcoes.forEach((op) => {
+          if (op["value"] == childInput.value) {
+            childInput.textContent = op["content"];
+            return;
+          }
+          const newOption = document.createElement("option");
+          newOption.setAttribute("value", op["value"]);
+          newOption.textContent = op["content"];
+
+          s.appendChild(newOption);
+        });
+      });
+    } catch (error) {
+      console.error("Erro ao alimentar selects de variaveis:", error);
+    }
+  }
+};

@@ -27,13 +27,13 @@
           {{> delete-button
             deleteUrl=(concat "/campanha/hsm/delete/" this._id)
             itemName=this.name
-            itemType="fluxo"
+            itemType="hsm"
           }}
 
           <a href="/campanha/hsm/edit/{{this._id}}">
             <img src="/img/edit.png"
             width="25"
-            height="25" alt="Editar fluxo">
+            height="25" alt="Editar hsm">
           </a>
           </th>
         <td class="col-1">{{this.cod}}</th>

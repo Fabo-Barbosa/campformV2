@@ -10,6 +10,7 @@ module.exports = {
   and: (a, b) => a && b,
   or: (a, b) => a || b,
   not: (a) => !a,
+  initWith: (t, c) => String(t || "").startsWith(c),
 
   upper: (text) => String(text || "").toUpperCase(),
   lower: (text) => String(text || "").toLowerCase(),

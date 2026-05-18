@@ -191,6 +191,37 @@ a {
   font-size: 0.95rem;
 }
 
+.hidden {
+  display: none;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas de tamanhos iguais */
+  gap: 10px; /* Espaço entre colunas */
+}
+
+.variables-container {
+  max-width: 100%;
+}
+
+.variable-row {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.variable-row + .variable-row {
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .variable-row .btn {
+    margin-top: 4px;
+  }
+}
+
 @media (max-width: 991.98px) {
   .status-grid {
     grid-template-columns: repeat(2, minmax(120px, 1fr));

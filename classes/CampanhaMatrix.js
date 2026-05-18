@@ -1,29 +1,31 @@
-require("../classes/Campanha");
+const Campanha = require("../classes/Campanha");
 
 class CampanhaMatrix extends Campanha {
+  static TYPE = Object.freeze([
+    Object.freeze({ name: "Notificação", cod: 2 }),
+    Object.freeze({ name: "Direcionado a um flow", cod: 1 }),
+  ]);
+
   constructor(
     listaClientes = [],
     codigoConta = null,
     codigoFluxo = null,
     codigoHsm = null,
-    variaveisMatrix = {},
+    tipo = null,
   ) {
+    super(listaClientes);
     this._estadoInicial = {
       listaClientes: [],
       codigoConta: null,
       codigoFluxo: null,
       codigoHsm: null,
-      variaveisMatrix: {},
+      tipo: null,
     };
 
-    super(listaClientes);
     this.codigoConta = codigoConta;
     this.codigoFluxo = codigoFluxo;
     this.codigoHsm = codigoHsm;
-    this.variaveisMatrix =
-      variaveisMatrix && typeof variaveisMatrix === "object"
-        ? { ...variaveisMatrix }
-        : {};
+    this.tipo = tipo;
   }
 
   definirCodigoConta(codigoConta) {
@@ -38,8 +40,8 @@ class CampanhaMatrix extends Campanha {
     this.codigoHsm = codigoHsm;
   }
 
-  definirVariaveisMatrix(variaveisMatrix) {
-    this.variaveisMatrix = variaveisMatrix;
+  quantidadeClientes() {
+    return this.listaClientes.length;
   }
 
   validarCampanha() {
@@ -83,7 +85,6 @@ class CampanhaMatrix extends Campanha {
       codigo_conta: this.codigoConta,
       codigo_fluxo: this.codigoFluxo,
       codigo_hsm: this.codigoHsm,
-      variaveis_matrix: this.variaveisMatrix,
     };
   }
 
@@ -92,8 +93,8 @@ class CampanhaMatrix extends Campanha {
     this.codigoConta = this._estadoInicial.codigoConta;
     this.codigoFluxo = this._estadoInicial.codigoFluxo;
     this.codigoHsm = this._estadoInicial.codigoHsm;
-    this.variaveisMatrix = { ...this._estadoInicial.variaveisMatrix };
+    this.tipo = this._estadoInicial.tipo;
   }
 }
 
-module.exports = new CampanhaMatrix();
+module.exports = CampanhaMatrix;
