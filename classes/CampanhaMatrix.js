@@ -8,36 +8,51 @@ class CampanhaMatrix extends Campanha {
 
   constructor(
     listaClientes = [],
-    codigoConta = null,
-    codigoFluxo = null,
-    codigoHsm = null,
+    conta = null,
+    fluxo = null,
+    hsm = null,
+    forca = false,
     tipo = null,
   ) {
     super(listaClientes);
     this._estadoInicial = {
       listaClientes: [],
-      codigoConta: null,
-      codigoFluxo: null,
-      codigoHsm: null,
+      conta: null,
+      fluxo: null,
+      hsm: null,
+      forca: false,
       tipo: null,
     };
 
-    this.codigoConta = codigoConta;
-    this.codigoFluxo = codigoFluxo;
-    this.codigoHsm = codigoHsm;
-    this.tipo = tipo;
+    this.conta = conta;
+    this.fluxo = fluxo;
+    this.hsm = hsm;
+    this.forca = forca;
+    this.numTipo = tipo;
   }
 
-  definirCodigoConta(codigoConta) {
-    this.codigoConta = codigoConta;
+  definirConta(conta) {
+    this.conta = conta;
   }
 
-  definirCodigoFluxo(codigoFluxo) {
-    this.codigoFluxo = codigoFluxo;
+  definirFluxo(fluxo) {
+    this.fluxo = fluxo;
   }
 
-  definirCodigoHsm(codigoHsm) {
-    this.codigoHsm = codigoHsm;
+  definirHsm(hsm) {
+    this.hsm = hsm;
+  }
+
+  forcarEnvio() {
+    this.forca = true;
+  }
+
+  naoForcarEnvio() {
+    this.forca = false;
+  }
+
+  definirTipoDeEnvio(tipo) {
+    this.numTipo = tipo;
   }
 
   quantidadeClientes() {
@@ -52,21 +67,21 @@ class CampanhaMatrix extends Campanha {
       };
     }
 
-    if (!this.codigoConta) {
+    if (!this.conta) {
       return {
         ok: false,
         mensagem: "O código da conta é obrigatório.",
       };
     }
 
-    if (!this.codigoFluxo) {
+    if (!this.fluxo) {
       return {
         ok: false,
         mensagem: "O código do fluxo é obrigatório.",
       };
     }
 
-    if (!this.codigoHsm) {
+    if (!this.hsm) {
       return {
         ok: false,
         mensagem: "O código do HSM é obrigatório.",
@@ -82,18 +97,21 @@ class CampanhaMatrix extends Campanha {
   toJSON() {
     return {
       lista_clientes: this.listaClientes,
-      codigo_conta: this.codigoConta,
-      codigo_fluxo: this.codigoFluxo,
-      codigo_hsm: this.codigoHsm,
+      conta: this.conta,
+      fluxo: this.fluxo,
+      hsm: this.hsm,
+      tipoEnvio: this.numTipo,
+      forca: this.forca,
     };
   }
 
   reset() {
     this.listaClientes = [...this._estadoInicial.listaClientes];
-    this.codigoConta = this._estadoInicial.codigoConta;
-    this.codigoFluxo = this._estadoInicial.codigoFluxo;
-    this.codigoHsm = this._estadoInicial.codigoHsm;
-    this.tipo = this._estadoInicial.tipo;
+    this.conta = this._estadoInicial.codigoConta;
+    this.fluxo = this._estadoInicial.codigoFluxo;
+    this.hsm = this._estadoInicial.codigoHsm;
+    this.numTipo = this._estadoInicial.tipo;
+    this.forca = this._estadoInicial.forca;
   }
 }
 

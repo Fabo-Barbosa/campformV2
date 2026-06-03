@@ -154,7 +154,7 @@ class CampaignSlotManager {
       throw new Error("Posição não está ocupada.");
     }
 
-    const campanhaEnviada = posicao.campanha;
+    const campanhaEnviada = posicao.campanha.toJSON();
 
     this._resetPosicao(posicao);
 

@@ -49,7 +49,7 @@ class Cliente {
       nome: this.nome,
       cpfCnpj: this.cnpj_cnpf,
       email: this.email,
-      telefone: this.telCelular,
+      telefone: "55" + this.telCelular,
       endereco: this.endereco,
     };
   }

@@ -1,0 +1,91 @@
+<div id="logsRefreshFeedback"></div>
+<div class="row justify-content-center">
+<div class="col-10">
+<div class="mb-4 d-flex justify-content-between">
+  <h2 class="page-title">Historico de Campanhas
+  </h2>
+  <button class="button_clear" id="btnAtualizarLogs">
+    <span class="icon_char">&#x2B6E</span>
+  </button>
+
+</div>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-active">
+      <th class="col-1">Ação</th>
+      <th class="col-1">hsm</th>
+      <th class="col-2">Data Inicio</th>
+      <th class="col-2">Data Final</th>
+      <th class="col-1">total</th>
+      <th class="col-1">sucessos</th>
+      <th class="col-1">erros</th>
+      <th class="col-2">Usuário</th>
+      <th class="col-1">Status</th>
+    </tr>
+  </thead>
+    <tbody id="logsTableBody">
+    {{#each logs}}
+      <tr data-log-id="{{this._id}}">
+        <td class="col-1 d-flex">
+
+          {{#if (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))}}
+            <a class="mr-2" href="/campanha/log/cancel/{{this._id}}">
+              <img src="/img/remove.png"
+              width="25"
+              height="25" alt="Cancelar envio">
+            </a>
+          {{else}}
+
+            <a class="mr-2" href="/campanha/log/report/{{this._id}}">
+              <img src="/img/visualizar2.png"
+              width="30"
+              height="25" alt="Visualizar relatório">
+            </a>
+            <a href="/campanha/log/info/{{this._id}}">
+              <img src="/img/estatisticas.png"
+              width="25"
+              height="25" alt="Visualizar informações de log">
+            </a>
+          {{/if}}
+          </th>
+        <td class="col-1" data-field="hsm">{{this.hsmId.cod}}</th>
+        <td class="col-2" data-field="dataInicio">{{formatDateTime this.dataEnvio}}</th>
+        <td class="col-2" data-field="dataFinal">{{formatDateTime this.finalizadoEm}}</th>
+        <td class="col-1" data-field="total">{{this.total}}</th>
+        <td class="col-1" data-field="sucessos">{{this.sucessos}}</th>
+        <td class="col-1" data-field="erros">{{this.erros}}</th>
+        <td class="col-2" data-field="usuario">{{this.userId.username}}</th>
+        <td class="col-1" data-field="status"><span class="{{statusColorBadge this.status}}">{{this.status}}</span></th>
+      </tr>
+    {{else}}
+    {{/each}}
+    </tbody>
+</table>
+{{#if logs.length}}
+    <nav aria-label="Paginação">
+      <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item {{#unless hasPrevPage}}disabled{{/unless}}">
+          <a class="page-link" href="/campanha/log/list?page={{prevPage}}">Anterior</a>
+        </li>
+
+        <li class="page-item">
+          <span class="page-link">
+            Página {{currentPage}} de {{totalPages}}
+          </span>
+        </li>
+
+        <li class="page-item {{#unless hasNextPage}}disabled{{/unless}}">
+          <a class="page-link" href="/campanha/log/list?page={{nextPage}}">Próxima</a>
+        </li>
+
+      </ul>
+    </nav>
+  {{else}}
+    <div class="alert alert-info">
+      Nenhum item encontrado.
+    </div>
+  {{/if}}
+</div>
+
+</div>

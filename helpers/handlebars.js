@@ -1,4 +1,18 @@
 // helpers/handlebars.js
+const behavior_scripts = {
+  send_form: "/utils/js/behaviorSendForm.js",
+  hsm_register: "/utils/js/behaviorHsmRegister.js",
+  flow_register_edit: "/utils/js/behaviorFlowRegisterEdit.js",
+  logs_list: "/utils/js/behaviorLogsList.js",
+};
+
+const badges_status = {
+  FINALIZADO: "badge badge-success",
+  ABORTADO: "badge badge-danger",
+  AGUARDANDO: "badge badge-secondary",
+  ENVIANDO: "badge badge-primary",
+};
+
 module.exports = {
   eq: (a, b) => a === b,
   ne: (a, b) => a !== b,
@@ -19,7 +33,7 @@ module.exports = {
   json: (context) => JSON.stringify(context),
 
   formatDate: (date) => {
-    if (!date) return "";
+    if (!date) return "-";
     return new Date(date).toLocaleDateString("pt-BR");
   },
 
@@ -53,5 +67,13 @@ module.exports = {
   length: (value) => {
     if (Array.isArray(value) || typeof value === "string") return value.length;
     return 0;
+  },
+
+  behaviorScript: (context) => {
+    return behavior_scripts[context];
+  },
+
+  statusColorBadge: (status) => {
+    return badges_status[status];
   },
 };

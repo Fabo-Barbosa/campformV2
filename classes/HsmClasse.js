@@ -5,11 +5,11 @@ class HsmClasse {
     Object.freeze({ value: "cidade", content: "Cidade do cliente" }),
   ];
 
-  static CATEGORIES = Object.freeze({
-    MARKETING: { name: "Marketing", price: 2 },
-    UTILITY: { name: "Utility", price: 1 },
-    AUTHENTICATION: { name: "Authentication", price: 1 },
-  });
+  static CATEGORIES = Object.freeze([
+    Object.freeze({ name: "Marketing", price: 2 }),
+    Object.freeze({ name: "Utility", price: 1 }),
+    Object.freeze({ name: "Authentication", price: 1 }),
+  ]);
 
   constructor({
     codigo = null,

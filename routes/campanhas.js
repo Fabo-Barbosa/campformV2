@@ -11,7 +11,54 @@ require("../models/Hsm");
 const Hsm = mongoose.model("hsm");
 require("../models/Fluxo");
 const Flow = mongoose.model("fluxo");
+require("../models/LogCampanha");
+const LogCampanha = mongoose.model("log_campanha");
 const { consultarResumoCampanha } = require("../services/querieRbxServices");
+const {
+  iniciarCampanhaComCadencia,
+} = require("../services/matrixCampanhaService");
+
+// Funções utilitárias
+function formatarData(data) {
+  if (!data) return "-";
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "medium",
+  }).format(new Date(data));
+}
+
+function normalizarBoolean(value) {
+  return (
+    value === true ||
+    value === "true" ||
+    value === "on" ||
+    value === 1 ||
+    value === "1"
+  );
+}
+
+function validarObjectId(value) {
+  return value && mongoose.Types.ObjectId.isValid(String(value));
+}
+
+function parseAgendamentos(value) {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value.map((item) => new Date(item));
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => new Date(item));
+  }
+
+  return [];
+}
 
 // Formulário princiapl
 router.get("/nova", (req, res) => {
@@ -24,6 +71,7 @@ router.get("/nova", (req, res) => {
         .lean()
         .then((fluxos) => {
           res.render("campanha/formulario", {
+            context: "send_form",
             contas: contas,
             fluxos: fluxos,
             sendtypes: CampanhaMatrix.TYPE,
@@ -84,7 +132,10 @@ router.get("/hsm/register", (req, res) => {
   Account.find({})
     .lean()
     .then((accounts) => {
-      res.render("campanha/registerhsm", { contas: accounts });
+      res.render("campanha/registerhsm", {
+        context: "hsm_register",
+        contas: accounts,
+      });
     })
     .catch((err) => {
       req.flash("error_msg", "Falha em carregar as contas.");
@@ -273,6 +324,184 @@ router.post("/hsm/delete/:id", (req, res) => {
     });
 });
 
+// Rotas de log de campanha
+// Rotas para hsms
+router.get("/log/list", async (req, res) => {
+  try {
+    const limit = 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const totalLogs = await LogCampanha.countDocuments();
+    const totalPages = Math.ceil(totalLogs / limit);
+
+    const logs = await LogCampanha.find()
+      .populate(["hsmId", "userId"])
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push({
+        number: i,
+        active: i === page,
+      });
+    }
+
+    res.render("campanha/logcampanhalist", {
+      context: "logs_list",
+      logs: logs,
+      currentPage: page,
+      totalPages: totalPages || 1,
+      hasPrevPage: page > 1,
+      hasNextPage: page < totalPages,
+      prevPage: page - 1,
+      nextPage: page + 1,
+    });
+  } catch (error) {
+    req.flash(
+      "error_msg",
+      "Houve um erro ao listar os logs de campanha " + error,
+    );
+    res.redirect("/homepage");
+  }
+});
+
+router.post("/send", async (req, res) => {
+  const {
+    sendtype,
+    conta,
+    fluxoMatrix,
+    hsm,
+    divisoesAgendamentos = 0,
+    agendamentos,
+    forca,
+  } = req.body || {};
+  const userId = res.locals.user._id;
+  const sendtypeNumber = Number(sendtype);
+  const divisoesNumber = Number(divisoesAgendamentos || 0);
+  const forcarEnvio = normalizarBoolean(forca);
+  var erros = [];
+  if (!userId) {
+    erros.push({ texto: "Usuário não identificado." });
+  }
+  if (![1, 2].includes(sendtypeNumber)) {
+    erros.push({ texto: "Tipo de envio inválido. Use 1 ou 2." });
+  }
+  if (!validarObjectId(conta)) {
+    erros.push({ texto: "Conta inválida!" });
+  }
+  if (!validarObjectId(hsm)) {
+    erros.push({ texto: "Hsm inválido!" });
+  }
+  if (sendtypeNumber !== 2 && !validarObjectId(fluxoMatrix)) {
+    erros.push({ texto: "Fluxo inválido!" });
+  }
+  if (Number.isNaN(divisoesNumber) || divisoesNumber < 0) {
+    erros.push({ texto: "Número de agendamentos inválido!" });
+  }
+
+  const datasAgendamento = parseAgendamentos(agendamentos);
+  if (divisoesNumber > 0) {
+    if (!datasAgendamento.length) {
+      erros.push({ texto: "Datas de agendamento vazias!" });
+    }
+
+    const algumaDataInvalida = datasAgendamento.some((data) =>
+      Number.isNaN(data.getTime()),
+    );
+
+    if (algumaDataInvalida) {
+      erros.push({ texto: "Existem uma ou mais datas inválidas!" });
+    }
+
+    if (datasAgendamento.length !== divisoesNumber) {
+      erros.push({
+        texto: "Número de agendamentos e número de datas não condizem!",
+      });
+    }
+  }
+
+  const [contaDoc, hsmDoc, fluxoDoc] = await Promise.all([
+    Account.findOne({ _id: conta }).lean(),
+    Hsm.findOne({ _id: hsm }).lean(),
+    sendtypeNumber === 2
+      ? Promise.resolve(null)
+      : Flow.findOne({ _id: fluxoMatrix }).lean(),
+  ]);
+
+  if (!contaDoc || typeof contaDoc === "undefined") {
+    erros.push({ texto: "Conta não encontrada!" });
+  }
+
+  if (!hsmDoc) {
+    erros.push({ texto: "Hsm não encontrado." });
+  }
+
+  if (sendtypeNumber !== 2 && !fluxoDoc) {
+    erros.push({ texto: "Fluxo matrix não encontrado." });
+  }
+
+  const posicaoSlot = await slotsCampanha.obterPosicaoDoUsuario(
+    userId.toString(),
+  );
+
+  if (!posicaoSlot) {
+    erros.push({
+      texto: "Usuário não possui um slot para realizar essa ação.",
+    });
+  }
+
+  const contas = await Account.find().sort({ createdAt: -1 }).lean();
+
+  if (erros.length > 0) {
+    res.locals.success_msg = [];
+
+    res.render("campanha/formulario", {
+      context: "send_form",
+      contas: contas,
+      sendtypes: CampanhaMatrix.TYPE,
+      erros: erros,
+    });
+  } else {
+    posicaoSlot.campanha.definirConta(contaDoc);
+    posicaoSlot.campanha.definirFluxo(fluxoDoc);
+    posicaoSlot.campanha.definirTipoDeEnvio(sendtypeNumber);
+    posicaoSlot.campanha.definirHsm(hsmDoc);
+    if (forca) posicaoSlot.campanha.forcarEnvio();
+
+    const campanhaFinal = await slotsCampanha.enviarCampanha(posicaoSlot.chave);
+
+    if (divisoesNumber === 0) {
+      const resultadoEnvio = await iniciarCampanhaComCadencia({
+        campanha: campanhaFinal,
+        userId: userId,
+      });
+
+      if (resultadoEnvio.ok) {
+        req.flash("success_msg", "Campanha enviada imediatamente com sucesso!");
+        return res.redirect("/campanha/nova");
+      } else {
+        res.locals.seccess_msg = [];
+        res.render("campanha/formulario", {
+          contas: contas,
+          sendtypes: CampanhaMatrix.TYPE,
+          erros: resultadoEnvio.erros,
+        });
+      }
+    } else {
+      // const resultadoAgendamento = await iniciarCampanhaComCadencia({
+      //   campanha: campanhaFinal,
+      //   timestamps: datasAgendamento,
+      // });
+
+      req.flash("success_msg", "Campanha agendada com sucesso!");
+      return res.redirect("/campanha/nova");
+    }
+  }
+});
 // Endpoints de retorno de dados
 router.post("/clientes", async (req, res) => {
   try {
@@ -397,7 +626,7 @@ router.get("/hsm/variables", async (req, res) => {
 
 router.get("/hsm/:id", async (req, res) => {
   try {
-    const hsm = await Hsm.findOne({ cod: req.params.id }).lean();
+    const hsm = await Hsm.findOne({ _id: req.params.id }).lean();
 
     return res.json({
       success: true,
@@ -413,7 +642,7 @@ router.get("/hsm/:id", async (req, res) => {
   }
 });
 
-router.get("count/campaign/:slot", async (req, res) => {
+router.get("/count/:slot", async (req, res) => {
   try {
     const campaign = slotsCampanha.obterCampanha(req.params.slot);
     const count = campaign.quantidadeClientes();
@@ -432,22 +661,74 @@ router.get("count/campaign/:slot", async (req, res) => {
   }
 });
 
-router.get("/price/count/:count/hsm/:id", async (req, res) => {
+router.post("/price", async (req, res) => {
   try {
-    const hsm = await Hsm.findOne({ cod: req.params.id }).lean();
-    const category = HsmClasse.CATEGORIES.find((cat) => cat.name === hsm.type);
-    const price = category.price * req.params.count;
+    if (req.params.count !== 0) {
+      const hsm = await Hsm.findOne({ _id: req.body.hsm_id }).lean();
+      const category = HsmClasse.CATEGORIES.find(
+        (cat) => cat.name === hsm.type,
+      );
+      const price = category.price * parseInt(req.body.quantidade);
 
-    return res.json({
-      success: true,
-      value: price,
-    });
+      return res.json({
+        success: true,
+        value: price,
+      });
+    } else {
+      return res.json({
+        success: true,
+        value: 0.0,
+      });
+    }
   } catch (error) {
     console.error("Erro na rota price/count/hsm", error);
 
     return res.status(500).json({
       success: false,
-      message: "Erro ao consultar valor total",
+      message: "Erro ao consultar valor total: " + error,
+    });
+  }
+});
+
+router.post("/log/api/refresh", async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || !ids.length) {
+      return res.status(400).json({
+        success: false,
+        message: "Nenhum ID de log foi informado.",
+      });
+    }
+
+    const logs = await LogCampanha.find({
+      _id: { $in: ids },
+    })
+      .populate(["hsmId", "userId"])
+      .lean();
+
+    const logsMapeados = logs.map((log) => ({
+      _id: String(log._id),
+      hsm: log.hsmId,
+      dataInicio: formatarData(log.dataEnvio),
+      dataFinal: formatarData(log.finalizadoEm),
+      total: log.total ?? 0,
+      sucessos: log.sucessos ?? 0,
+      erros: log.erros ?? 0,
+      usuario: log.userId.username ?? "-",
+      status: log.status ?? "-",
+    }));
+
+    return res.json({
+      success: true,
+      logs: logsMapeados,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Erro interno ao atualizar logs.",
     });
   }
 });

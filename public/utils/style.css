@@ -205,6 +205,23 @@ a {
   max-width: 100%;
 }
 
+.icon_char {
+  font-size: 30px;
+  font-weight: 900;
+  margin: 0 auto;
+  color: #3a3f4b;
+}
+
+.button_clear {
+  all: unset;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
 .variable-row {
   padding: 8px;
   border: 1px solid #e5e7eb;

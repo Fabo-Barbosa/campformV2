@@ -1,6 +1,10 @@
 <div class="container page-wrapper">
   <div class="row">
     <div class="col-12">
+      {{#each erros}}
+        <div class="alert alert-danger">{{this.texto}}</div>
+      {{else}}
+      {{/each}}
       <h1 class="page-title">Criar e Enviar Campanhas</h1>
     </div>
   </div>
@@ -9,7 +13,7 @@
     <!-- FORM PRINCIPAL -->
     <div class="col-lg-7">
       <div class="campaign-card">
-        <form action="/sua-rota-nextjs" method="POST" id="campaignForm">
+        <form action="/campanha/send" method="POST" id="campaignForm">
           <!-- PRIMEIROS CAMPOS -->
           <div class="mb-4">
             <label class="form-label section-label">Status de Contrato</label>
@@ -18,9 +22,8 @@
               <div class="status-option">
                 <div class="form-check">
                   <input
-                    class="form-check-input"
+                    class="form-check-input statusContrato"
                     type="checkbox"
-                    name="statusContrato"
                     value="A"
                     id="statusAtivo"
                   />
@@ -34,14 +37,13 @@
               <div class="status-option">
                 <div class="form-check">
                   <input
-                    class="form-check-input"
+                    class="form-check-input statusContrato"
                     type="checkbox"
-                    name="statusContrato"
                     value="B"
                     id="statusBloqueado"
                   />
                   <label
-                    class="form-check-label"
+                    class="form-check-label statusContrato"
                     for="statusBloqueado"
                   >Bloqueado</label>
                 </div>
@@ -50,9 +52,8 @@
               <div class="status-option">
                 <div class="form-check">
                   <input
-                    class="form-check-input"
+                    class="form-check-input statusContrato"
                     type="checkbox"
-                    name="statusContrato"
                     value="C"
                     id="statusCancelado"
                   />
@@ -66,9 +67,8 @@
               <div class="status-option">
                 <div class="form-check">
                   <input
-                    class="form-check-input"
+                    class="form-check-input statusContrato"
                     type="checkbox"
-                    name="statusContrato"
                     value="S"
                     id="statusSuspenso"
                   />
@@ -90,7 +90,6 @@
                   type="number"
                   class="form-control"
                   id="faixaInicial"
-                  name="faixaAtrasoInicial"
                   placeholder="Ex: 1"
                   min="0"
                 />
@@ -103,7 +102,6 @@
                   type="number"
                   class="form-control"
                   id="faixaFinal"
-                  name="faixaAtrasoFinal"
                   placeholder="Ex: 30"
                   min="0"
                 />
@@ -132,7 +130,7 @@
               <select
                 class="form-control mb-4"
                 id="tipoenvio"
-                name="sendtypes"
+                name="sendtype"
                 required
               >
                 <option value="" selected disabled>Selecione um tipo de envio</option>
@@ -221,11 +219,11 @@
 
         <div class="summary-block">
           <span class="summary-label">Mensagem HSM Selecionada:</span>
-          <div class="summary-value">
-            <strong>Tipo:</strong>
+          <div class="summary-value" id="resumoCategoriaHsm">
+            <strong>Categoria:</strong>
             N/A
           </div>
-          <div class="summary-muted mt-2">
+          <div class="summary-muted mt-2" id="resumoHsmContent">
             Selecione um HSM válido.
           </div>
         </div>
@@ -244,7 +242,7 @@
 
         <div class="summary-block">
           <span class="summary-label">Valor Estimado da Campanha (R$):</span>
-          <div class="summary-price">R$ 0,00</div>
+          <div class="summary-price" id="resumoPriceCampanha">R$ 0,00</div>
         </div>
       </div>
     </div>

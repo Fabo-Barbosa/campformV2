@@ -472,6 +472,7 @@ router.get("/flow/register", eAdmin, (req, res) => {
     .lean()
     .then((accounts) => {
       res.render("admin/registerflow", {
+        context: "flow_register_edit",
         contas: accounts,
         headersConsulta: Cliente.headerFields,
       });
@@ -562,6 +563,7 @@ router.get("/flow/edit/:id", eAdmin, (req, res) => {
         .then((flow) => {
           accounts = accounts.filter((conta) => conta.cod !== flow.conta.cod);
           res.render("admin/editflow", {
+            context: "flow_register_edit",
             flow: flow,
             contas: accounts,
             headersConsulta: Cliente.headerFields,
@@ -604,6 +606,7 @@ router.post("/flow/edit", eAdmin, (req, res) => {
           .lean()
           .then((accounts) => {
             res.render("admin/editflow", {
+              context: "flow_register_edit",
               erros: erros,
               flow: flow,
               contas: accounts,
