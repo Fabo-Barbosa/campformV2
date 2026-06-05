@@ -7,10 +7,26 @@ const behavior_scripts = {
 };
 
 const badges_status = {
-  FINALIZADO: "badge badge-success",
-  ABORTADO: "badge badge-danger",
-  AGUARDANDO: "badge badge-secondary",
-  ENVIANDO: "badge badge-primary",
+  FINALIZADO: {
+    btsrp: "badge badge-success",
+    classStyle: "status-campanha status-campanha-finalizado",
+  },
+  ABORTADO: {
+    btsrp: "badge badge-danger",
+    classStyle: "status-campanha status-campanha-abortado",
+  },
+  AGUARDANDO: {
+    btsrp: "badge badge-secondary",
+    classStyle: "status-campanha status-campanha-aguardando",
+  },
+  ENVIANDO: {
+    btsrp: "badge badge-primary",
+    classStyle: "status-campanha status-campanha-enviando",
+  },
+  CANCELADO: {
+    btsrp: "badge badge-warning",
+    classStyle: "status-campanha status-campanha-cancelado",
+  },
 };
 
 module.exports = {
@@ -38,7 +54,7 @@ module.exports = {
   },
 
   formatDateTime: (date) => {
-    if (!date) return "";
+    if (!date) return "-";
     return new Date(date).toLocaleString("pt-BR");
   },
 
@@ -74,6 +90,10 @@ module.exports = {
   },
 
   statusColorBadge: (status) => {
-    return badges_status[status];
+    return badges_status[status].btsrp;
+  },
+
+  statusColorClassStyle: (status) => {
+    return badges_status[status].classStyle;
   },
 };

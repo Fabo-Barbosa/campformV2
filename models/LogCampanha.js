@@ -18,7 +18,7 @@ const LogCampanhaSchema = new Schema({
   },
   conta: {
     type: Schema.Types.ObjectId,
-    ref: "contas",
+    ref: "conta",
     required: true,
   },
   agendamentos: [

@@ -1,0 +1,69 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <h2 class="page-title">Informações da Campanha
+    </h2>
+    <div class="card">
+      <div class="card-body">
+        <div class="card mb-4">
+          <div class="card-header">
+            <strong>Informações gerais</strong>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"><strong>Status: </strong><span
+                class="{{statusColorClassStyle log.status}}"
+              >{{log.status}}</span></p>
+            <p class="card-text"><strong>Data de registro:
+              </strong>{{formatDateTime log.dataEnvio}}</p>
+            <p class="card-text"><strong>Data de finalização:
+              </strong>{{formatDateTime log.finalizadoEm}}</p>
+            <p><strong>Agendamentos: </strong>
+              {{#if log.gendamentos.length}}
+                {{#each log.gendamentos}}
+                  {{formatDateTime this}}
+                  |
+                {{/each}}
+              {{else}}
+                Não há agendamentos, campanha imediata.
+              {{/if}}
+            </p>
+            <p><strong>Tipo de envio: </strong>{{#if (eq log.sendType "1")}}
+                Direcionado a um fluxo
+              {{else}} Notificação {{/if}}</p>
+
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">
+            <strong>Conta</strong>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"><strong>Status: </strong><span
+              >{{log.status}}</span></p>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">
+            <strong>Fluxo</strong>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"><strong>Status: </strong><span
+              >{{log.status}}</span></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <strong>Hsm</strong>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"><strong>Status: </strong><span
+              >{{log.status}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!row) return;
 
+      atualizarAction(row, log.status, log._id);
       atualizarCampo(row, "hsm", log.hsm.cod);
       atualizarCampo(row, "dataInicio", log.dataInicio);
       atualizarCampo(row, "dataFinal", log.dataFinal);
@@ -66,6 +67,30 @@ document.addEventListener("DOMContentLoaded", () => {
       atualizarStatus(row, log.status);
       destacarLinha(row);
     });
+  }
+
+  function atualizarAction(row, status, id) {
+    const cell = row.querySelector('[data-field="action"]');
+
+    if (!cell) return;
+
+    if (status === "ENVIANDO" || status === "AGENDADO") {
+      cell.innerHTML = `
+        <a class="mr-2" href="/campanha/log/cancel/${id}">
+          <img src="/img/remove.png"
+            width="25"
+            height="25" alt="Cancelar envio">
+        </a>
+    `;
+    } else {
+      cell.innerHTML = `
+        <a href="/campanha/log/info/${id}">
+          <img src="/img/estatisticas.png"
+          width="25"
+          height="25" alt="Visualizar informações de log">
+        </a>
+    `;
+    }
   }
 
   function atualizarCampo(row, field, value) {

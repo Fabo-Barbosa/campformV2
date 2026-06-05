@@ -26,7 +26,7 @@
     <tbody id="logsTableBody">
     {{#each logs}}
       <tr data-log-id="{{this._id}}">
-        <td class="col-1 d-flex">
+        <td class="col-1 d-flex" data-field="action">
 
           {{#if (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))}}
             <a class="mr-2" href="/campanha/log/cancel/{{this._id}}">
@@ -35,12 +35,6 @@
               height="25" alt="Cancelar envio">
             </a>
           {{else}}
-
-            <a class="mr-2" href="/campanha/log/report/{{this._id}}">
-              <img src="/img/visualizar2.png"
-              width="30"
-              height="25" alt="Visualizar relatório">
-            </a>
             <a href="/campanha/log/info/{{this._id}}">
               <img src="/img/estatisticas.png"
               width="25"

@@ -92,7 +92,10 @@ async function registrarErro({ logId }) {
 async function cancelarEnvio({ logId }) {
   const chaveExecucao = String(logId);
   if (!campanhasEmExecucao.has(chaveExecucao)) {
-    return;
+    return {
+      ok: false,
+      error: "A campanha não está em execução ou agendada",
+    };
   }
   try {
     await LogCampanha.findByIdAndUpdate(logId, {
@@ -101,10 +104,17 @@ async function cancelarEnvio({ logId }) {
         finalizadoEm: new Date(),
       },
     });
+
+    campanhasEmExecucao.set(chaveExecucao, false);
+
+    return {
+      ok: true,
+      message: `campanha cancelada: log ${chaveExecucao}`,
+    };
   } catch (erro) {
     return {
       ok: false,
-      erro: "Falha ao cancelar execução.",
+      error: "Falha ao cancelar execução.",
     };
   }
 
@@ -250,4 +260,5 @@ async function iniciarCampanhaComCadencia({
 
 module.exports = {
   iniciarCampanhaComCadencia,
+  cancelarEnvio,
 };

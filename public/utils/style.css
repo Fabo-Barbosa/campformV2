@@ -233,6 +233,43 @@ button:focus {
   margin-top: 8px;
 }
 
+.status-campanha {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.status-campanha-cancelado {
+  background-color: #facc15;
+  color: #111827;
+}
+
+.status-campanha-enviando {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.status-campanha-finalizado {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.status-campanha-abortado {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.status-campanha-aguardando {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   .variable-row .btn {
     margin-top: 4px;

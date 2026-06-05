@@ -16,6 +16,7 @@ const LogCampanha = mongoose.model("log_campanha");
 const { consultarResumoCampanha } = require("../services/querieRbxServices");
 const {
   iniciarCampanhaComCadencia,
+  cancelarEnvio,
 } = require("../services/matrixCampanhaService");
 
 // Funções utilitárias
@@ -322,6 +323,54 @@ router.post("/hsm/delete/:id", (req, res) => {
       req.flash("error_msg", "Falha ao deletar o hsm.");
       res.redirect("/campanha/hsm/list");
     });
+});
+
+router.get("/log/cancel/:id", async (req, res) => {
+  const campanhaEmExecId = req.params.id;
+  try {
+    const respCancel = await cancelarEnvio({ logId: campanhaEmExecId });
+    if (respCancel.ok) {
+      req.flash("success_msg", "Campanha cancelada com sucesso.");
+      res.redirect("/campanha/log/list");
+    } else {
+      req.flash(
+        "error_msg",
+        "O estado atual da campanha não permite o seu cancelamento",
+      );
+      res.redirect("/campanha/log/list");
+    }
+  } catch (error) {
+    req.flash(
+      "error_msg",
+      "Ocorreu um erro no servidor ao tentar cancelar a campanha",
+    );
+    res.redirect("/campanha/log/list");
+  }
+});
+
+router.get("/log/info/:id", async (req, res) => {
+  const campanhaLogId = req.params.id;
+  try {
+    const campanhaLog = await LogCampanha.findById(campanhaLogId)
+      .populate(["hsmId", "userId", "flow", "conta"])
+      .lean();
+
+    if (campanhaLog) {
+      res.render("campanha/infocampanhalog", { log: campanhaLog });
+    } else {
+      req.flash(
+        "error_msg",
+        "O log da campanha não foi encontrado na base da dados.",
+      );
+      res.redirect("/campanha/log/list");
+    }
+  } catch (error) {
+    req.flash(
+      "error_msg",
+      "Ocorreu um erro ao buscar informações do log na base.",
+    );
+    res.redirect("/campanha/log/list");
+  }
 });
 
 // Rotas de log de campanha
