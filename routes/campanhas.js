@@ -18,6 +18,7 @@ const {
   iniciarCampanhaComCadencia,
   cancelarEnvio,
 } = require("../services/matrixCampanhaService");
+const { listarCampanhas } = require("../services/3cCampanhaService");
 
 // Funções utilitárias
 function formatarData(data) {
@@ -62,7 +63,7 @@ function parseAgendamentos(value) {
 }
 
 // Formulário princiapl
-router.get("/nova", (req, res) => {
+router.get("/hsm/nova", (req, res) => {
   Account.find()
     .sort({ createdAt: -1 })
     .lean()
@@ -71,7 +72,7 @@ router.get("/nova", (req, res) => {
         .sort({ createdAt: -1 })
         .lean()
         .then((fluxos) => {
-          res.render("campanha/formulario", {
+          res.render("campanha/formulariohsm", {
             context: "send_form",
             contas: contas,
             fluxos: fluxos,
@@ -87,6 +88,33 @@ router.get("/nova", (req, res) => {
       req.flash("error_msg", "Falha ao carregar contas matrix.");
       res.redirect("/homepage");
     });
+});
+
+router.get("/discador/nova", async (req, res) => {
+  try {
+    const campanhas = await listarCampanhas();
+
+    return res.render("campanha/formulariodiscador", {
+      context: "disc_form",
+      title: "Campanhas",
+      campanhas,
+      erro: null,
+    });
+  } catch (error) {
+    console.error("[ERRO_LISTAR_CAMPANHAS]", {
+      message: error.message,
+      statusCode: error.statusCode,
+      details: error.details,
+    });
+
+    return res
+      .status(error.statusCode || 500)
+      .render("campanha/formulariodiscador", {
+        title: "Campanhas",
+        campanhas: [],
+        erro: error.message || "Erro ao carregar campanhas.",
+      });
+  }
 });
 
 // Rotas para hsms
@@ -325,6 +353,7 @@ router.post("/hsm/delete/:id", (req, res) => {
     });
 });
 
+// Rotas de log de campanha
 router.get("/log/cancel/:id", async (req, res) => {
   const campanhaEmExecId = req.params.id;
   try {
@@ -373,8 +402,6 @@ router.get("/log/info/:id", async (req, res) => {
   }
 });
 
-// Rotas de log de campanha
-// Rotas para hsms
 router.get("/log/list", async (req, res) => {
   try {
     const limit = 10;
@@ -508,7 +535,7 @@ router.post("/send", async (req, res) => {
   if (erros.length > 0) {
     res.locals.success_msg = [];
 
-    res.render("campanha/formulario", {
+    res.render("campanha/formulariohsm", {
       context: "send_form",
       contas: contas,
       sendtypes: CampanhaMatrix.TYPE,
@@ -534,7 +561,7 @@ router.post("/send", async (req, res) => {
         return res.redirect("/campanha/nova");
       } else {
         res.locals.seccess_msg = [];
-        res.render("campanha/formulario", {
+        res.render("campanha/formulariohsm", {
           contas: contas,
           sendtypes: CampanhaMatrix.TYPE,
           erros: resultadoEnvio.erros,

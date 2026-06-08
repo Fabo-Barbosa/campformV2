@@ -4,6 +4,7 @@ const behavior_scripts = {
   hsm_register: "/utils/js/behaviorHsmRegister.js",
   flow_register_edit: "/utils/js/behaviorFlowRegisterEdit.js",
   logs_list: "/utils/js/behaviorLogsList.js",
+  disc_form: "/utils/js/behaviorSendFormDisc.js",
 };
 
 const badges_status = {

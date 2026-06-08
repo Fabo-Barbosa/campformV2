@@ -2,14 +2,27 @@
   <div class="col-8">
     <h2 class="page-title">Informações da Campanha
     </h2>
-    <div class="card">
-      <div class="card-body">
-        <div class="card mb-4">
-          <div class="card-header">
-            <strong>Informações gerais</strong>
-          </div>
+    <div id="accordion">
+      <div class="card mb-4">
+        <div class="card-header" id="headingOne">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          ><strong>
+              Informações gerais
+            </strong>
+          </button>
+        </div>
+        <div
+          id="collapseOne"
+          class="collapse show"
+          aria-labelledby="headingOne"
+          data-parent="#accordion"
+        >
           <div class="card-body">
-            <h5 class="card-title"></h5>
             <p class="card-text"><strong>Status: </strong><span
                 class="{{statusColorClassStyle log.status}}"
               >{{log.status}}</span></p>
@@ -30,37 +43,103 @@
             <p><strong>Tipo de envio: </strong>{{#if (eq log.sendType "1")}}
                 Direcionado a um fluxo
               {{else}} Notificação {{/if}}</p>
+            <p><strong>Envio forçado: </strong>{{#if (eq log.forcaEnvio true)}}
+                Sim
+              {{else}} Não {{/if}}</p>
+            <div class="row">
+              <p class="col-2"><strong>Total: </strong>{{log.total}}</p>
+              <p class="col-2"><strong>Sucessos: </strong>{{log.sucessos}}</p>
+              <p class="col-2"><strong>Erros: </strong>{{log.erros}}</p>
+            </div>
 
           </div>
         </div>
-        <div class="card mb-4">
-          <div class="card-header">
+      </div>
+      <div class="card mb-4">
+        <div class="card-header" id="headingTwo">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapseTwo"
+            aria-expanded="true"
+            aria-controls="collapseTwo"
+          >
             <strong>Conta</strong>
-          </div>
+          </button>
+        </div>
+        <div
+          id="collapseTwo"
+          class="collapse"
+          aria-labelledby="headingTwo"
+          data-parent="#accordion"
+        >
           <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"><strong>Status: </strong><span
-              >{{log.status}}</span></p>
+            <p class="card-text"><strong>Codigo:
+              </strong>{{log.conta.cod}}</p>
+            <p class="card-text"><strong>Nome: </strong>{{log.conta.name}}</p>
+            <p class="card-text"><strong>Descrição:
+              </strong>{{log.conta.description}}</p>
           </div>
         </div>
-        <div class="card mb-4">
-          <div class="card-header">
+      </div>
+      <div class="card mb-4">
+        <div class="card-header" id="headingThree">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapseThree"
+            aria-expanded="true"
+            aria-controls="collapseThree"
+          >
             <strong>Fluxo</strong>
-          </div>
+          </button>
+        </div>
+        <div
+          id="collapseThree"
+          class="collapse"
+          aria-labelledby="headingThree"
+          data-parent="#accordion"
+        >
           <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"><strong>Status: </strong><span
-              >{{log.status}}</span></p>
+            {{#if log.flow}}
+              <p class="card-text"><strong>Codigo:
+                </strong>{{log.flow.cod}}</p>
+              <p class="card-text"><strong>Nome:
+                </strong>{{log.flow.name}}</p>
+              <p class="card-text"><strong>Descrição:
+                </strong>{{log.flow.description}}</p>
+            {{else}}
+              <p>A campanha não foi enviada por meio de um fluxo.</p>
+            {{/if}}
           </div>
         </div>
-        <div class="card">
-          <div class="card-header">
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingFour">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapseFour"
+            aria-expanded="true"
+            aria-controls="collapseFour"
+          >
             <strong>Hsm</strong>
-          </div>
+          </button>
+        </div>
+        <div
+          id="collapseFour"
+          class="collapse"
+          aria-labelledby="headingFour"
+          data-parent="#accordion"
+        >
           <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"><strong>Status: </strong><span
-              >{{log.status}}</span></p>
+            <p class="card-text"><strong>Codigo:
+              </strong>{{log.hsmId.cod}}</p>
+            <p class="card-text"><strong>Categoria:
+              </strong>{{log.hsmId.type}}</p>
+            <p class="card-text"><strong>Nome: </strong>{{log.hsmId.name}}</p>
+            <p class="card-text"><strong>Conteúdo:
+              </strong>{{log.hsmId.content}}</p>
           </div>
         </div>
       </div>
