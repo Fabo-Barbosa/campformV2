@@ -29,27 +29,26 @@
         <td class="col-1 d-flex" data-field="action">
 
           {{#if (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))}}
-            <a class="mr-2" href="/campanha/log/cancel/{{this._id}}">
-              <img src="/img/remove.png"
-              width="25"
-              height="25" alt="Cancelar envio">
-            </a>
+            {{> cancel-button
+              cancelUrl=(concat "/campanha/log/cancel/" this._id)
+              itemType="esse Agendamento"
+            }}
           {{else}}
-            <a href="/campanha/log/info/{{this._id}}">
+          {{/if}}
+          <a href="/campanha/log/info/{{this._id}}">
               <img src="/img/estatisticas.png"
               width="25"
               height="25" alt="Visualizar informações de log">
             </a>
-          {{/if}}
-          </th>
-        <td class="col-1" data-field="hsm">{{this.hsmId.cod}}</th>
-        <td class="col-2" data-field="dataInicio">{{formatDateTime this.dataEnvio}}</th>
-        <td class="col-2" data-field="dataFinal">{{formatDateTime this.finalizadoEm}}</th>
-        <td class="col-1" data-field="total">{{this.total}}</th>
-        <td class="col-1" data-field="sucessos">{{this.sucessos}}</th>
-        <td class="col-1" data-field="erros">{{this.erros}}</th>
-        <td class="col-2" data-field="usuario">{{this.userId.username}}</th>
-        <td class="col-1" data-field="status"><span class="{{statusColorBadge this.status}}">{{this.status}}</span></th>
+          </td>
+        <td class="col-1" data-field="hsm">{{this.hsmId.cod}}</td>
+        <td class="col-2" data-field="dataInicio">{{formatDateTime this.createdAt}}</td>
+        <td class="col-2" data-field="dataFinal">{{formatDateTime this.finalizadoEm}}</td>
+        <td class="col-1" data-field="total">{{this.total}}</td>
+        <td class="col-1" data-field="sucessos">{{this.sucessos}}</td>
+        <td class="col-1" data-field="erros">{{this.erros}}</td>
+        <td class="col-2" data-field="usuario">{{this.userId.username}}</td>
+        <td class="col-1" data-field="status"><span class="{{statusColorBadge this.status}}">{{this.status}}</span></td>
       </tr>
     {{else}}
     {{/each}}

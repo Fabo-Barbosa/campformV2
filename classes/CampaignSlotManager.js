@@ -1,4 +1,5 @@
-const Campanha = require("./CampanhaMatrix");
+const CampanhaMatrix = require("./CampanhaMatrix");
+const CampanhaDiscador = require("./CampanhaDiscador");
 
 class CampaignSlotManager {
   constructor({
@@ -10,7 +11,7 @@ class CampaignSlotManager {
 
     this.posicoes = Array.from({ length: limitePosicoes }, (_, index) => ({
       chave: `c${index}`,
-      campanha: new Campanha(),
+      campanha: null,
       usuarioId: null,
       createdAt: null,
       updatedAt: null,
@@ -28,7 +29,7 @@ class CampaignSlotManager {
   }
 
   _resetPosicao(posicao) {
-    posicao.campanha.reset();
+    posicao.campanha = null;
     posicao.usuarioId = null;
     posicao.createdAt = null;
     posicao.updatedAt = null;
@@ -61,7 +62,7 @@ class CampaignSlotManager {
     );
   }
 
-  ocuparPosicao(usuarioId) {
+  ocuparPosicao(usuarioId, tipo) {
     if (!usuarioId) {
       throw new Error("usuarioId é obrigatório.");
     }
@@ -71,6 +72,19 @@ class CampaignSlotManager {
     const posicaoExistente = this.obterPosicaoDoUsuario(usuarioId);
     if (posicaoExistente) {
       posicaoExistente.updatedAt = this._agora();
+      if (
+        posicaoExistente &&
+        posicaoExistente.campanha instanceof CampanhaMatrix &&
+        tipo === 2
+      ) {
+        posicaoExistente.campanha = new CampanhaDiscador();
+      } else if (
+        posicaoExistente &&
+        posicaoExistente.campanha instanceof CampanhaDiscador &&
+        tipo === 1
+      ) {
+        posicaoExistente.campanha = new CampanhaMatrix();
+      }
       return {
         chave: posicaoExistente.chave,
         reutilizada: true,
@@ -87,7 +101,11 @@ class CampaignSlotManager {
     posicaoLivre.usuarioId = usuarioId;
     posicaoLivre.createdAt = this._agora();
     posicaoLivre.updatedAt = this._agora();
-    posicaoLivre.campanha.reset();
+    if (tipo === 1) {
+      posicaoLivre.campanha = new CampanhaMatrix();
+    } else if (tipo === 2) {
+      posicaoLivre.campanha = new CampanhaDiscador();
+    } else return null;
 
     return {
       chave: posicaoLivre.chave,

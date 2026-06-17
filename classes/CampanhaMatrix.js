@@ -13,6 +13,7 @@ class CampanhaMatrix extends Campanha {
     hsm = null,
     forca = false,
     tipo = null,
+    agendamentos = [],
   ) {
     super(listaClientes);
     this._estadoInicial = {
@@ -22,6 +23,7 @@ class CampanhaMatrix extends Campanha {
       hsm: null,
       forca: false,
       tipo: null,
+      agendamentos: [],
     };
 
     this.conta = conta;
@@ -29,6 +31,7 @@ class CampanhaMatrix extends Campanha {
     this.hsm = hsm;
     this.forca = forca;
     this.numTipo = tipo;
+    this.agendamentos = agendamentos;
   }
 
   definirConta(conta) {
@@ -41,6 +44,10 @@ class CampanhaMatrix extends Campanha {
 
   definirHsm(hsm) {
     this.hsm = hsm;
+  }
+
+  definirAgendamnetos(agendamentos) {
+    this.agendamentos = agendamentos;
   }
 
   forcarEnvio() {
@@ -102,6 +109,7 @@ class CampanhaMatrix extends Campanha {
       hsm: this.hsm,
       tipoEnvio: this.numTipo,
       forca: this.forca,
+      agendamentos: this.agendamentos,
     };
   }
 
@@ -112,6 +120,7 @@ class CampanhaMatrix extends Campanha {
     this.hsm = this._estadoInicial.codigoHsm;
     this.numTipo = this._estadoInicial.tipo;
     this.forca = this._estadoInicial.forca;
+    this.agendamentos = this._estadoInicial.agendamentos;
   }
 }
 

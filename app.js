@@ -14,6 +14,8 @@ const Passport = require("passport");
 require("./config/auth")(Passport);
 const db = require("./config/db");
 require("dotenv").config();
+require("./models/LogCampanha");
+const LogCampanha = mongoose.model("log_campanha");
 
 // Config
 // sessão
@@ -65,8 +67,29 @@ app.use("/user", user);
 app.use(isAuthenticated);
 
 // Routes
-app.get("/homepage", (req, res) => {
-  res.render("index");
+app.get("/homepage", async (req, res) => {
+  try {
+    const recents = await LogCampanha.find({ agendamentos: [] })
+      .populate(["hsmId", "userId"])
+      .sort({ dataEnvio: -1, _id: -1 })
+      .limit(3)
+      .lean();
+
+    const schedule = await LogCampanha.find({
+      $and: [{ agendamentos: { $ne: [] } }, { finalizadoEm: null }],
+    })
+      .populate(["hsmId", "userId"])
+      .sort({ dataEnvio: -1, _id: -1 })
+      .limit(3)
+      .lean();
+
+    res.render("index", { recents, schedule });
+  } catch (error) {
+    const erro = {
+      erro: "Não foi possível carregar os dados de campanhas e agendamentos.",
+    };
+    res.render("index", { erro });
+  }
 });
 
 app.use("/campanha", campanha);

@@ -1,0 +1,38 @@
+<!-- Modal para confirmação de exclusão de elementos -->
+<div
+  class="modal fade"
+  id="cancelConfirmModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="cancelConfirmForm" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar cancelamento</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-dismiss="modal"
+            aria-label="Fechar"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <p id="cancelConfirmText">
+            Tem certeza que deseja cancelar a execução?
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-danger">
+            Cancelar Execução
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

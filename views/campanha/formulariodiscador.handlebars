@@ -18,7 +18,7 @@
     <!-- FORM PRINCIPAL -->
     <div class="col-lg-7">
       <div class="campaign-card">
-        <form action="/campanha/send" method="POST" id="campaignForm">
+        <form action="/campanha/discador/send" method="POST" id="campaignForm">
           <!-- PRIMEIROS CAMPOS -->
           <div class="mb-4">
             <label class="form-label section-label">Status de Contrato</label>
@@ -130,6 +130,12 @@
           <!-- RESTANTE DOS CAMPOS -->
           <div class="row g-3">
             <div class="mb-3 col-12">
+              <label for="name" class="form-label section-label">Nome da lista</label>
+              <input type="text" name="name" id="name" class="form-control" />
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="mb-3 col-12">
               <label for="campaignSelect" class="form-label section-label">
                 Campanhas 3C
               </label>
@@ -148,9 +154,10 @@
                 <button
                   type="button"
                   id="btnAdicionarCampanha"
-                  class="btn btn-primary"
+                  class="btn-adicao"
+                  aria-label="Adicionar"
                 >
-                  +
+                  <span class="icone-mais">+</span>
                 </button>
               </div>
             </div>

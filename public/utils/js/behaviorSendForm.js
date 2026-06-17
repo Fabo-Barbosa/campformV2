@@ -447,6 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
     data["status"] = status;
     data["atrasoInicial"] = faixaInicial;
     data["atrasoFinal"] = faixaFinal;
+    data["tipo"] = 1;
 
     return data;
   }

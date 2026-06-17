@@ -2,6 +2,7 @@
 const behavior_scripts = {
   send_form: "/utils/js/behaviorSendForm.js",
   hsm_register: "/utils/js/behaviorHsmRegister.js",
+  hsm_edit: "/utils/js/behaviorHsmEdit.js",
   flow_register_edit: "/utils/js/behaviorFlowRegisterEdit.js",
   logs_list: "/utils/js/behaviorLogsList.js",
   disc_form: "/utils/js/behaviorSendFormDisc.js",

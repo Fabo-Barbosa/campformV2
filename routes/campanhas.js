@@ -18,7 +18,27 @@ const {
   iniciarCampanhaComCadencia,
   cancelarEnvio,
 } = require("../services/matrixCampanhaService");
-const { listarCampanhas } = require("../services/3cCampanhaService");
+const {
+  listarCampanhas,
+  criarListasComMailing,
+} = require("../services/3cCampanhaService");
+const CampanhaDiscador = require("../classes/CampanhaDiscador");
+const {
+  recuperarAgendamentosPendentes,
+  agendarCampanhaComCadencia,
+  cancelarAgendamentoCampanha,
+} = require("../services/matrixCampanhaAgendamentoService");
+
+recuperarAgendamentosPendentes({
+  intervaloEntreLotesMs: 2000,
+  quantidadePorLote: 20,
+})
+  .then((resultado) => {
+    console.log(`Agendamentos recuperados: ${resultado.totalRecuperados}`);
+  })
+  .catch((error) => {
+    console.error("Erro ao recuperar agendamentos pendentes:", error);
+  });
 
 // Funções utilitárias
 function formatarData(data) {
@@ -40,26 +60,28 @@ function normalizarBoolean(value) {
   );
 }
 
-function validarObjectId(value) {
-  return value && mongoose.Types.ObjectId.isValid(String(value));
+function parseAgendamentos(agendamentos) {
+  if (!agendamentos) {
+    return [];
+  }
+
+  if (Array.isArray(agendamentos)) {
+    return agendamentos.filter(Boolean).map((valor) => new Date(valor));
+  }
+
+  if (typeof agendamentos === "object") {
+    return Object.keys(agendamentos)
+      .sort((a, b) => Number(a) - Number(b))
+      .map((chave) => agendamentos[chave])
+      .filter(Boolean)
+      .map((valor) => new Date(valor));
+  }
+
+  return [new Date(agendamentos)];
 }
 
-function parseAgendamentos(value) {
-  if (!value) return [];
-
-  if (Array.isArray(value)) {
-    return value.map((item) => new Date(item));
-  }
-
-  if (typeof value === "string") {
-    return value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-      .map((item) => new Date(item));
-  }
-
-  return [];
+function validarObjectId(value) {
+  return value && mongoose.Types.ObjectId.isValid(String(value));
 }
 
 // Formulário princiapl
@@ -257,6 +279,7 @@ router.get("/hsm/edit/:id", (req, res) => {
         .then((hsm) => {
           accounts = accounts.filter((conta) => conta.cod !== hsm.conta.cod);
           res.render("campanha/edithsm", {
+            context: "hsm_edit",
             hsm: hsm,
             contas: accounts,
           });
@@ -342,29 +365,73 @@ router.post("/hsm/edit", (req, res) => {
 });
 
 router.post("/hsm/delete/:id", (req, res) => {
-  Hsm.deleteOne({ _id: req.params.id })
-    .then(() => {
-      req.flash("success_msg", "Hsm deletado com sucesso.");
-      res.redirect("/campanha/hsm/list");
+  LogCampanha.findOne({ hsmId: req.params.id })
+    .then((log) => {
+      if (log) {
+        req.flash(
+          "error_msg",
+          "O hsm já está vinculado a uma campanha. Não é possível excluí-lo",
+        );
+        res.redirect("/campanha/hsm/list");
+      } else {
+        Hsm.deleteOne({ _id: req.params.id })
+          .then(() => {
+            req.flash("success_msg", "Hsm deletado com sucesso.");
+            res.redirect("/campanha/hsm/list");
+          })
+          .catch((err) => {
+            req.flash("error_msg", "Falha ao deletar o hsm.");
+            res.redirect("/campanha/hsm/list");
+          });
+      }
     })
-    .catch((err) => {
+    .catch((error) => {
       req.flash("error_msg", "Falha ao deletar o hsm.");
       res.redirect("/campanha/hsm/list");
     });
 });
 
 // Rotas de log de campanha
-router.get("/log/cancel/:id", async (req, res) => {
+router.post("/log/cancel/:id", async (req, res) => {
   const campanhaEmExecId = req.params.id;
   try {
-    const respCancel = await cancelarEnvio({ logId: campanhaEmExecId });
-    if (respCancel.ok) {
-      req.flash("success_msg", "Campanha cancelada com sucesso.");
-      res.redirect("/campanha/log/list");
+    const log = await LogCampanha.findById(campanhaEmExecId).lean();
+
+    if (log) {
+      if (log.grupoAgendamento && log.status === "AGUARDANDO") {
+        const respCancelAgendamento =
+          await cancelarAgendamentoCampanha(campanhaEmExecId);
+
+        if (respCancelAgendamento.ok) {
+          req.flash(
+            "success_msg",
+            "Agendamento de campanha cancelado com sucesso.",
+          );
+          res.redirect("/campanha/log/list");
+        } else {
+          req.flash(
+            "error_msg",
+            "O estado atual da campanha não permite o seu cancelamento",
+          );
+          res.redirect("/campanha/log/list");
+        }
+      } else {
+        const respCancel = await cancelarEnvio({ logId: campanhaEmExecId });
+        if (respCancel.ok) {
+          req.flash("success_msg", "Envio de campanha cancelado com sucesso.");
+          res.redirect("/campanha/log/list");
+        } else {
+          req.flash(
+            "error_msg",
+            "O estado atual da campanha não permite o seu cancelamento",
+          );
+          res.redirect("/campanha/log/list");
+        }
+      }
     } else {
       req.flash(
         "error_msg",
-        "O estado atual da campanha não permite o seu cancelamento",
+        "O registro de log da campanha não foi encontrado",
       );
       res.redirect("/campanha/log/list");
     }
@@ -412,8 +479,8 @@ router.get("/log/list", async (req, res) => {
     const totalPages = Math.ceil(totalLogs / limit);
 
     const logs = await LogCampanha.find()
+      .sort({ createdAt: -1, _id: -1 })
       .populate(["hsmId", "userId"])
-      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -445,7 +512,81 @@ router.get("/log/list", async (req, res) => {
   }
 });
 
-router.post("/send", async (req, res) => {
+router.post("/discador/send", async (req, res) => {
+  const { name, campaignIds } = req.body;
+  const userId = res.locals.user._id;
+  var erros = [];
+  if (!userId) {
+    erros.push({ texto: "Usuário não identificado." });
+  }
+  if (!name || typeof name === "undefined" || name.length < 3) {
+    erros.push({ texto: "O nome da lista é inválido." });
+  }
+  if (!campaignIds || !Array.isArray(campaignIds) || campaignIds.length <= 0) {
+    erros.push({ texto: "Deve-se selecionar no mínimo uma campanha." });
+  }
+
+  const posicaoSlot = await slotsCampanha.obterPosicaoDoUsuario(
+    userId.toString(),
+  );
+  if (!posicaoSlot) {
+    erros.push({
+      texto: "O usuário não possui um slot para completar a ação.",
+    });
+  }
+  if (!(posicaoSlot.campanha instanceof CampanhaDiscador)) {
+    erros.push({
+      texto: "Contextos diferentes. Realize uma nova consulta para normalizar.",
+    });
+  }
+
+  if (!(posicaoSlot.campanha.quantidadeClientes() > 0)) {
+    erros.push({
+      texto: "A quantidade de clientes é insuficiente.",
+    });
+  }
+
+  if (erros.length > 0) {
+    try {
+      res.locals.success_msg = [];
+      const campanhas = await listarCampanhas();
+
+      return res.render("campanha/formulariodiscador", {
+        context: "disc_form",
+        title: "Campanhas",
+        campanhas,
+        erros: erros,
+      });
+    } catch {
+      return res
+        .status(error.statusCode || 500)
+        .render("campanha/formulariodiscador", {
+          title: "Campanhas",
+          campanhas: [],
+          erro: error.message || "Erro ao renderizar página do discador.",
+        });
+    }
+  } else {
+    posicaoSlot.campanha.definirCampanhas(campaignIds);
+    posicaoSlot.campanha.definirNome(name);
+    try {
+      const campanhaFinal = await slotsCampanha.enviarCampanha(
+        posicaoSlot.chave,
+      );
+      const resultado = await criarListasComMailing(campanhaFinal);
+      req.flash("success_msg", "Listas criadas nas campanhas selecionadas.");
+      return res.redirect("/campanha/discador/nova");
+    } catch (error) {
+      req.flash(
+        "error_msg",
+        "Falha ao criar listas e adicioná-las nas campanhas.",
+      );
+      return res.redirect("/campanha/discador/nova");
+    }
+  }
+});
+
+router.post("/hsm/send", async (req, res) => {
   const {
     sendtype,
     conta,
@@ -530,6 +671,12 @@ router.post("/send", async (req, res) => {
     });
   }
 
+  if (!(posicaoSlot.campanha instanceof CampanhaMatrix)) {
+    erros.push({
+      texto: "Contextos diferentes. Realize uma nova consulta para normalizar.",
+    });
+  }
+
   const contas = await Account.find().sort({ createdAt: -1 }).lean();
 
   if (erros.length > 0) {
@@ -558,7 +705,7 @@ router.post("/send", async (req, res) => {
 
       if (resultadoEnvio.ok) {
         req.flash("success_msg", "Campanha enviada imediatamente com sucesso!");
-        return res.redirect("/campanha/nova");
+        return res.redirect("/campanha/hsm/nova");
       } else {
         res.locals.seccess_msg = [];
         res.render("campanha/formulariohsm", {
@@ -568,13 +715,31 @@ router.post("/send", async (req, res) => {
         });
       }
     } else {
-      // const resultadoAgendamento = await iniciarCampanhaComCadencia({
-      //   campanha: campanhaFinal,
-      //   timestamps: datasAgendamento,
-      // });
+      const resultadoAgendamento = await agendarCampanhaComCadencia({
+        campanha: campanhaFinal,
+        userId,
+        agendamentos: datasAgendamento,
+        intervaloEntreLotesMs: 2000,
+        quantidadePorLote: 20,
+      });
 
-      req.flash("success_msg", "Campanha agendada com sucesso!");
-      return res.redirect("/campanha/nova");
+      if (resultadoAgendamento.ok) {
+        req.flash(
+          "success_msg",
+          `Campanha agendada com sucesso! ${resultadoAgendamento.totalClientes} clientes divididos em ${resultadoAgendamento.totalAgendamentos} agendamento(s).`,
+        );
+
+        return res.redirect("/campanha/hsm/nova");
+      }
+
+      res.locals.success_msg = [];
+
+      return res.render("campanha/formulariohsm", {
+        context: "send_form",
+        contas,
+        sendtypes: CampanhaMatrix.TYPE,
+        erros: resultadoAgendamento.erros,
+      });
     }
   }
 });
@@ -583,7 +748,7 @@ router.post("/clientes", async (req, res) => {
   try {
     // Verificação de slots de campanha
     const userId = res.locals.user._id;
-    const slot = slotsCampanha.ocuparPosicao(userId.toString());
+    const slot = slotsCampanha.ocuparPosicao(userId.toString(), req.body.tipo);
     if (!slot) {
       console.error("Slots de campanhas indisponíveis", error);
 
@@ -786,7 +951,7 @@ router.post("/log/api/refresh", async (req, res) => {
     const logsMapeados = logs.map((log) => ({
       _id: String(log._id),
       hsm: log.hsmId,
-      dataInicio: formatarData(log.dataEnvio),
+      dataInicio: formatarData(log.createdAt),
       dataFinal: formatarData(log.finalizadoEm),
       total: log.total ?? 0,
       sucessos: log.sucessos ?? 0,

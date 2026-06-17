@@ -261,4 +261,6 @@ async function iniciarCampanhaComCadencia({
 module.exports = {
   iniciarCampanhaComCadencia,
   cancelarEnvio,
+  executarEnvioCadenciado,
+  normalizarListaContatos,
 };

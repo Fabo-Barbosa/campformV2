@@ -74,12 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!cell) return;
 
-    if (status === "ENVIANDO" || status === "AGENDADO") {
+    if (status === "ENVIANDO" || status === "AGUARDANDO") {
       cell.innerHTML = `
         <a class="mr-2" href="/campanha/log/cancel/${id}">
           <img src="/img/remove.png"
             width="25"
             height="25" alt="Cancelar envio">
+        </a>
+        <a href="/campanha/log/info/${id}">
+          <img src="/img/estatisticas.png"
+          width="25"
+          height="25" alt="Visualizar informações de log">
         </a>
     `;
     } else {

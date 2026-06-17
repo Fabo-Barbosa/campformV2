@@ -20,34 +20,8 @@
         {{{body}}}
         
     </div>
-    <!-- Modal para confirmação de exclusão de elementos -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="deleteConfirmForm" method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirmar exclusão</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <p id="deleteConfirmText">
-                            Tem certeza que deseja excluir este item?
-                        </p>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-danger">
-                            Confirmar exclusão
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    {{>_modal-delete}}
+    {{>_modal-cancel}}
 
     <!-- Overlay de carregamento (fora do shell para garantir a posição fixed) -->
     <div id="loadingOverlay" class="loading-overlay hidden" aria-hidden="true">

@@ -41,9 +41,6 @@ function verifyPassword() {
   const registerBtn = document.getElementById("btnRegister");
   const minLength = 8;
 
-  // Inicializa o popover (necessário no Bootstrap para ativar o gatilho)
-  //$(passwordInput).popover('show');
-
   // Seleciona o corpo do popover que está renderizado no DOM
   const popoverBody = document.querySelector(".popover-body");
 
@@ -66,12 +63,13 @@ function verifyPassword() {
   }
 }
 
-// Remove a lógica de adicionar seleção de fluxo
-
-// Função exibir modal para confiramar exclusão de item
+// Função exibir modal para confiramar exclusão de item ou cancelar uma operação
 document.addEventListener("DOMContentLoaded", () => {
   const deleteForm = document.getElementById("deleteConfirmForm");
   const deleteText = document.getElementById("deleteConfirmText");
+
+  const cancelForm = document.getElementById("cancelConfirmForm");
+  const cancelText = document.getElementById("cancelConfirmText");
 
   document.querySelectorAll(".js-open-delete-modal").forEach((button) => {
     button.addEventListener("click", () => {
@@ -83,9 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
       deleteText.textContent = `Tem certeza que deseja excluir o ${itemType} "${itemName}"?`;
     });
   });
-});
 
-// Separar para um arquivo de comportamento
+  document.querySelectorAll(".js-open-cancel-modal").forEach((button) => {
+    button.addEventListener("click", () => {
+      const cancelUrl = button.dataset.cancelUrl;
+      const itemType = button.dataset.itemType || "esta execução";
+
+      cancelForm.action = cancelUrl;
+      cancelText.textContent = `Tem certeza que deseja cancelar ${itemType}?`;
+    });
+  });
+});
 
 // Exibe a camada de carregamento (overlay).
 function showLoading(title = "Enviando…", subtitle = "Aguarde um instante.") {
@@ -101,6 +107,18 @@ function showLoading(title = "Enviando…", subtitle = "Aguarde um instante.") {
     loadingOverlay.classList.remove("hidden");
     loadingOverlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+  }
+}
+
+/**
+ * Oculta a camada de carregamento (overlay).
+ */
+function hideLoading() {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) {
+    loadingOverlay.classList.add("hidden");
+    loadingOverlay.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 }
 
@@ -157,18 +175,6 @@ function mapearParaListaPadrao(lista, valueKey = "cod", contentKey = "name") {
   }));
 }
 
-/**
- * Oculta a camada de carregamento (overlay).
- */
-function hideLoading() {
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  if (loadingOverlay) {
-    loadingOverlay.classList.add("hidden");
-    loadingOverlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-}
-
 // Lógica de agendamento
 function obterDateTimeLocalMinimo() {
   const agora = new Date();
@@ -198,40 +204,3 @@ function validarDataHoraFutura(input) {
   input.setCustomValidity("");
   return true;
 }
-
-// Removida lógica de resumo
-
-window.onload = async function () {
-  // Lógica de alimentação de selects de variáveis na área de editar um hsm
-  // ######################################################################
-  const selectVariables = document.getElementsByClassName("variable_select");
-  if (selectVariables.length > 0) {
-    try {
-      const response = await fetch("/campanha/hsm/variables", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const result = await response.json();
-      const opcoes = result["data"];
-
-      Array.from(selectVariables).forEach((s) => {
-        const childInput = s.querySelector(".variable_input");
-        opcoes.forEach((op) => {
-          if (op["value"] == childInput.value) {
-            childInput.textContent = op["content"];
-            return;
-          }
-          const newOption = document.createElement("option");
-          newOption.setAttribute("value", op["value"]);
-          newOption.textContent = op["content"];
-
-          s.appendChild(newOption);
-        });
-      });
-    } catch (error) {
-      console.error("Erro ao alimentar selects de variaveis:", error);
-    }
-  }
-};
