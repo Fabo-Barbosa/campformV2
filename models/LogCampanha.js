@@ -26,12 +26,6 @@ const LogCampanhaSchema = new Schema(
       required: true,
     },
 
-    agendamentos: [
-      {
-        type: Date,
-      },
-    ],
-
     agendadoPara: {
       type: Date,
       default: null,

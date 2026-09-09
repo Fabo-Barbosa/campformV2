@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
 <div class="col-10">
 <div class="mb-4 d-flex justify-content-between">
-  <h2 class="page-title">Fluxos do Matrix
+  <h2 class="h4 mb-1 page-title">Fluxos do Matrix
   </h2>
   <a href="/admin/flow/register">
     <img src="/img/more.png"
@@ -20,10 +20,10 @@
       <th class="col-3">Conta Vinculada</th>
     </tr>
   </thead>
-  {{#each flows}}
     <tbody>
+      {{#each flows}}
       <tr>
-        <td class="col-1 d-flex">
+        <td class="col-1">
           {{> delete-button
             deleteUrl=(concat "/admin/flow/delete/" this._id)
             itemName=this.name
@@ -35,15 +35,15 @@
             width="25"
             height="25" alt="Editar fluxo">
           </a>
-          </th>
+        </td>
         <td class="col-1">{{this.cod}}</th>
         <td class="col-3">{{this.name}}</th>
         <td class="col-4">{{this.description}}</th>
         <td class="col-3">{{this.conta.name}}</th>
       </tr>
-    </thead>
-  {{else}}
-  {{/each}}
+      {{else}}
+      {{/each}}
+    </tbody>
 </table>
 {{#if flows.length}}
     <nav aria-label="Paginação">

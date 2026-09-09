@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrollAtual = window.scrollY;
 
     try {
-      const response = await fetch("/campanha/log/api/refresh", {
+      const response = await fetch("/mensagem-hsm/log/api/refresh", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,12 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (status === "ENVIANDO" || status === "AGUARDANDO") {
       cell.innerHTML = `
-        <a class="mr-2" href="/campanha/log/cancel/${id}">
+        <a class="mr-2" href="/mensagem-hsm/log/cancel/${id}">
           <img src="/img/remove.png"
             width="25"
             height="25" alt="Cancelar envio">
         </a>
-        <a href="/campanha/log/info/${id}">
+        <a href="/mensagem-hsm/log/info/${id}">
           <img src="/img/estatisticas.png"
           width="25"
           height="25" alt="Visualizar informações de log">
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     } else {
       cell.innerHTML = `
-        <a href="/campanha/log/info/${id}">
+        <a href="/mensagem-hsm/log/info/${id}">
           <img src="/img/estatisticas.png"
           width="25"
           height="25" alt="Visualizar informações de log">
@@ -130,20 +130,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     switch (statusNormalizado) {
       case "FINALIZADO":
-        return "badge-success";
+        return "bg-success";
 
       case "ENVIANDO":
       case "EM ANDAMENTO":
-        return "badge-primary";
+        return "bg-primary";
 
       case "AGUARDANDO":
-        return "badge-secondary";
+        return "bg-secondary";
 
       case "ABORTADO":
-        return "badge-danger";
+        return "bg-danger";
 
       case "CANCELADO":
-        return "badge-warning";
+        return "bg-warning text-dark";
 
       default:
         return "bg-dark";

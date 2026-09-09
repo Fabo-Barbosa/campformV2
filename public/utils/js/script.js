@@ -204,3 +204,73 @@ function validarDataHoraFutura(input) {
   input.setCustomValidity("");
   return true;
 }
+
+// Lógica de pesquisa no menu de opções do NAVBAR
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("nav-search-input");
+  const resultsContainer = document.getElementById("search-results");
+
+  // Função para mapear os links visíveis/existentes no Navbar do usuário
+  function getNavbarLinks() {
+    const links = [];
+    // Seleciona todos os links válidos dentro do menu de navegação, ignorando toggles e divisores
+    const navLinks = document.querySelectorAll(
+      "#navbarSupportedContent .nav-link:not(.dropdown-toggle), #navbarSupportedContent .dropdown-item",
+    );
+
+    navLinks.forEach((link) => {
+      // Limpa o texto (remove espaços extras e o texto informativo do leitor de tela do Bootstrap)
+      let text = link.innerText.replace("(current)", "").trim();
+      let href = link.getAttribute("href");
+
+      // Só adiciona se o link tiver um texto válido e não for apenas um "#" vazio
+      if (text && href && href !== "#") {
+        links.push({ text: text, href: href });
+      }
+    });
+    return links;
+  }
+
+  // Executa a busca a cada caractere digitado
+  searchInput.addEventListener("input", function () {
+    const query = this.value.toLowerCase().trim();
+    resultsContainer.innerHTML = ""; // Limpa os resultados anteriores
+
+    if (query.length === 0) {
+      resultsContainer.style.display = "none";
+      return;
+    }
+
+    const links = getNavbarLinks();
+    // Filtra os links cujo texto inclui o que foi digitado
+    const matches = links.filter((link) =>
+      link.text.toLowerCase().includes(query),
+    );
+
+    if (matches.length > 0) {
+      matches.forEach((match) => {
+        // Cria o elemento de link idêntico ao padrão do Bootstrap
+        const item = document.createElement("a");
+        item.classList.add("dropdown-item");
+        item.href = match.href;
+        item.textContent = match.text;
+
+        resultsContainer.appendChild(item);
+      });
+      resultsContainer.style.display = "block";
+    } else {
+      // Se não houver padrões, apenas não exibe nada
+      resultsContainer.style.display = "none";
+    }
+  });
+
+  // Fecha a lista de resultados se o usuário clicar fora do campo de pesquisa
+  document.addEventListener("click", function (e) {
+    if (
+      !searchInput.contains(e.target) &&
+      !resultsContainer.contains(e.target)
+    ) {
+      resultsContainer.style.display = "none";
+    }
+  });
+});

@@ -6,27 +6,28 @@ const behavior_scripts = {
   flow_register_edit: "/utils/js/behaviorFlowRegisterEdit.js",
   logs_list: "/utils/js/behaviorLogsList.js",
   disc_form: "/utils/js/behaviorSendFormDisc.js",
+  camp_report: "/utils/js/behaviorCampLogReport.js",
 };
 
 const badges_status = {
   FINALIZADO: {
-    btsrp: "badge badge-success",
+    btsrp: "badge bg-success",
     classStyle: "status-campanha status-campanha-finalizado",
   },
   ABORTADO: {
-    btsrp: "badge badge-danger",
+    btsrp: "badge bg-danger",
     classStyle: "status-campanha status-campanha-abortado",
   },
   AGUARDANDO: {
-    btsrp: "badge badge-secondary",
+    btsrp: "badge bg-secondary",
     classStyle: "status-campanha status-campanha-aguardando",
   },
   ENVIANDO: {
-    btsrp: "badge badge-primary",
+    btsrp: "badge bg-primary",
     classStyle: "status-campanha status-campanha-enviando",
   },
   CANCELADO: {
-    btsrp: "badge badge-warning",
+    btsrp: "badge bg-warning text-dark",
     classStyle: "status-campanha status-campanha-cancelado",
   },
 };

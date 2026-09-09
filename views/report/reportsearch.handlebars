@@ -1,0 +1,162 @@
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h3 mb-1 page-title">Relatório de Campanhas</h1>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <form id="formRelatorioAnalitico">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="usuarioId" class="form-label">Usuário</label>
+            <select id="usuarioId" name="usuarioId" class="form-control">
+              <option value="">Todos os usuários</option>
+
+              {{#each usuarios}}
+                <option value="{{this._id}}">
+                  {{#if this.nome}}
+                    {{this.nome}}
+                  {{else}}
+                    {{#if this.name}}
+                      {{this.name}}
+                    {{else}}
+                      {{this.email}}
+                    {{/if}}
+                  {{/if}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="contaId" class="form-label">Conta</label>
+            <select id="contaId" name="contaId" class="form-control">
+              <option value="">Todas as contas</option>
+
+              {{#each contas}}
+                <option value="{{this._id}}">
+                  {{#if this.nome}}
+                    {{this.nome}}
+                  {{else}}
+                    {{this.name}}
+                  {{/if}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="categoriaHsmId" class="form-label">Categoria HSM</label>
+            <select
+              id="categoriaHsmId"
+              name="categoriaHsmId"
+              class="form-control"
+            >
+              <option value="">Todas as categorias</option>
+
+              {{#each categoriasHsm}}
+                <option value="{{this}}">
+                  {{this}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="dataInicio" class="form-label">Data inicial</label>
+            <input
+              type="datetime-local"
+              id="dataInicio"
+              name="dataInicio"
+              class="form-control"
+            />
+          </div>
+
+          <div class="col-md-3">
+            <label for="dataFim" class="form-label">Data final</label>
+            <input
+              type="datetime-local"
+              id="dataFim"
+              name="dataFim"
+              class="form-control"
+            />
+          </div>
+
+          <div class="col-md-3">
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-control">
+              <option value="">Todos os status</option>
+              <option value="AGUARDANDO">AGUARDANDO</option>
+              <option value="ENVIANDO">ENVIANDO</option>
+              <option value="FINALIZADO">FINALIZADO</option>
+              <option value="ABORTADO">ABORTADO</option>
+              <option value="CANCELADO">CANCELADO</option>
+            </select>
+          </div>
+
+          <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+              Pesquisar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="areaResultado" class="card shadow-sm border-0 d-none">
+    <div class="card-header bg-white border-0">
+      <div
+        class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+      >
+        <div>
+          <h2 class="h5 fw-semibold mb-0">Logs encontrados</h2>
+          <small id="totalRegistrosTexto" class="text-muted"></small>
+        </div>
+
+        <button
+          id="btnBaixarCsv"
+          type="button"
+          class="btn btn-outline-success btn-sm"
+        >
+          Baixar CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body pt-0">
+      <div id="alertaResultado" class="alert alert-info d-none mb-3"></div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Hsm</th>
+              <th>Usuário</th>
+              <th>Criado em</th>
+              <th>Finalizado em</th>
+              <th class="text-end">Total</th>
+              <th class="text-end">Sucessos</th>
+              <th class="text-end">Erros</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="tbodyLogs"></tbody>
+        </table>
+      </div>
+
+      <div
+        class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2"
+      >
+        <small id="paginaAtualTexto" class="text-muted"></small>
+
+        <nav aria-label="Paginação do relatório">
+          <ul id="paginacaoLogs" class="pagination pagination-sm mb-0"></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

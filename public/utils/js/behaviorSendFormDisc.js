@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const endpoints = {
-    consultarClientes: "/campanha/clientes/",
+    consultarClientes: "/cliente/lista/",
     ultimaQuantidadeConsulta: "/campanha/count/",
   };
 

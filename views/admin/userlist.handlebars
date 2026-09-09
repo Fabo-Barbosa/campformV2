@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
 <div class="col-10">
 <div class="mb-4 d-flex justify-content-between">
-  <h2 class="page-title">Usuários do Sistema
+  <h2 class="h4 mb-1 page-title">Usuários do Sistema
   </h2>
   <a href="/admin/user/register">
     <img src="/img/more.png"
@@ -21,10 +21,10 @@
       <th class="col-1">Ativo?</th>
     </tr>
   </thead>
-  {{#each users}}
     <tbody>
+      {{#each users}}
       <tr>
-        <td class="col-1 d-flex">
+        <td class="col-1">
           {{> delete-button
             deleteUrl=(concat "/admin/user/delete/" this._id)
             itemName=this.name
@@ -43,9 +43,9 @@
         <td class="col-1">{{this.eAdmin}}</th>
         <td class="col-1">{{this.active}}</th>
       </tr>
-    </thead>
-  {{else}}
-  {{/each}}
+      {{else}}
+      {{/each}}
+    </tbody>
 </table>
 {{#if users.length}}
     <nav aria-label="Paginação">

@@ -5,8 +5,12 @@ const mongoose = require("mongoose");
 const app = express();
 const path = require("path");
 const user = require("./routes/user");
-const campanha = require("./routes/campanhas");
+const campanhaHsmRoute = require("./routes/campanhaHsm");
+const campanhaDiscadorRoute = require("./routes/campanhaDiscador");
+const clienteRoute = require("./routes/cliente");
+const hsmRoute = require("./routes/hsmRouter");
 const admin = require("./routes/admin");
+const report = require("./routes/reports");
 const isAuthenticated = require("./helpers/isAuthenticated");
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -69,9 +73,9 @@ app.use(isAuthenticated);
 // Routes
 app.get("/homepage", async (req, res) => {
   try {
-    const recents = await LogCampanha.find({ agendamentos: [] })
+    const recents = await LogCampanha.find({ finalizadoEm: { $ne: null } })
       .populate(["hsmId", "userId"])
-      .sort({ dataEnvio: -1, _id: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .limit(3)
       .lean();
 
@@ -79,7 +83,7 @@ app.get("/homepage", async (req, res) => {
       $and: [{ agendamentos: { $ne: [] } }, { finalizadoEm: null }],
     })
       .populate(["hsmId", "userId"])
-      .sort({ dataEnvio: -1, _id: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .limit(3)
       .lean();
 
@@ -92,8 +96,12 @@ app.get("/homepage", async (req, res) => {
   }
 });
 
-app.use("/campanha", campanha);
+app.use("/mensagem-hsm", campanhaHsmRoute);
+app.use("/discador", campanhaDiscadorRoute);
 app.use("/admin", admin);
+app.use("/report", report);
+app.use("/cliente", clienteRoute);
+app.use("/template", hsmRoute);
 
 // outros
 const port = 5678;

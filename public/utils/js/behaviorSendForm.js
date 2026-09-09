@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const idSelectHsms = "hsm";
     limparSelect(idSelectHsms);
     try {
-      const resHsms = await fetch(`/campanha/hsms/${valorSelecionado}`, {
+      const resHsms = await fetch(`/template/hsms/${valorSelecionado}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     limparSelect(idSelectFluxos);
 
     try {
-      const resFluxos = await fetch(`/campanha/fluxos/${valorSelecionado}`, {
+      const resFluxos = await fetch(`/mensagem-hsm/fluxos/${valorSelecionado}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -233,9 +233,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const endpoints = {
-    consultarClientes: "/campanha/clientes/",
-    buscarHsm: "/campanha/hsm",
-    calcularPreco: "/campanha/price/",
+    consultarClientes: "/cliente/lista",
+    buscarHsm: "/template/hsm",
+    calcularPreco: "/template/hsm/price/",
     ultimaQuantidadeConsulta: "/campanha/count/",
   };
 

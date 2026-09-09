@@ -1,14 +1,14 @@
 <div id="logsRefreshFeedback"></div>
 <div class="row justify-content-center">
-  <div class="col-10">
+  <div class="col-10 mb-4">
     {{#if erro}}
       <div class="alert alert-danger">{{erro.erro}}</div>
     {{else}}
     {{/if}}
-    <div class="mb-4 d-flex justify-content-between">
+    <div class="h4 mb-1 d-flex justify-content-between">
       <h2 class="page-title">Campanhas Recentes
       </h2>
-      <a href="/campanha/hsm/nova" class="mt-4">
+      <a href="/mensagem-hsm/campanha/nova" class="mt-4">
         <img
           src="/img/more.png"
           width="30"
@@ -35,18 +35,18 @@
       <tbody id="logsTableBody">
         {{#each recents}}
           <tr data-log-id="{{this._id}}">
-            <td class="col-1 d-flex" data-field="action">
+            <td class="col-1" data-field="action">
 
               {{#if
                 (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))
               }}
                 {{> cancel-button
-                  cancelUrl=(concat "/campanha/log/cancel/" this._id)
+                  cancelUrl=(concat "/mensagem-hsm/log/cancel/" this._id)
                   itemType="esse Agendamento"
                 }}
               {{else}}
               {{/if}}
-              <a href="/campanha/log/info/{{this._id}}">
+              <a href="/mensagem-hsm/log/info/{{this._id}}">
                 <img
                   src="/img/estatisticas.png"
                   width="25"
@@ -82,7 +82,7 @@
   </div>
   <div class="col-10 mt-4">
     <div class="mb-4 d-flex justify-content-between">
-      <h2 class="page-title">Agendamentos
+      <h2 class="h4 mb-1 page-title">Agendamentos
       </h2>
 
     </div>
@@ -103,18 +103,18 @@
       <tbody id="logsTableBody">
         {{#each schedule}}
           <tr data-log-id="{{this._id}}">
-            <td class="col-1 d-flex" data-field="action">
+            <td class="col-1" data-field="action">
 
               {{#if
                 (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))
               }}
                 {{> cancel-button
-                  cancelUrl=(concat "/campanha/log/cancel/" this._id)
+                  cancelUrl=(concat "/mensagem-hsm/log/cancel/" this._id)
                   itemType="esse Agendamento"
                 }}
               {{else}}
               {{/if}}
-              <a href="/campanha/log/info/{{this._id}}">
+              <a href="/mensagem-hsm/log/info/{{this._id}}">
                 <img
                   src="/img/estatisticas.png"
                   width="25"

@@ -1,10 +1,10 @@
+{{#each erros}}
+  <div class="alert alert-danger">{{this.texto}}</div>
+{{else}}
+{{/each}}
 <div class="container page-wrapper">
   <div class="row">
     <div class="col-12">
-      {{#each erros}}
-        <div class="alert alert-danger">{{this.texto}}</div>
-      {{else}}
-      {{/each}}
       <h1 class="page-title">Criar e Enviar Campanhas</h1>
     </div>
   </div>
@@ -13,7 +13,7 @@
     <!-- FORM PRINCIPAL -->
     <div class="col-lg-7">
       <div class="campaign-card">
-        <form action="/campanha/hsm/send" method="POST" id="campaignForm">
+        <form action="/mensagem-hsm/campanha/send" method="POST" id="campaignForm">
           <!-- PRIMEIROS CAMPOS -->
           <div class="mb-4">
             <label class="form-label section-label">Status de Contrato</label>
@@ -128,7 +128,7 @@
               <label for="tipoenvio" class="form-label section-label">Tipo de
                 Envio</label>
               <select
-                class="form-control mb-4"
+                class="form-control mb-2"
                 id="tipoenvio"
                 name="sendtype"
                 required
@@ -145,7 +145,7 @@
             <div class="col-12 container-conta">
               <label for="conta" class="form-label section-label">Conta</label>
               <select
-                class="form-control mb-4"
+                class="form-control mb-2"
                 id="conta"
                 name="conta"
                 required
@@ -161,7 +161,7 @@
 
             <div class="col-12 container-fluxo" id="containerFluxo">
             </div>
-            <div class="form-row col-12">
+            <div class="row col-12">
               <div class="form-group col-md-6">
                 <label for="hsm" class="form-label section-label">Selecione o
                   HSM</label>

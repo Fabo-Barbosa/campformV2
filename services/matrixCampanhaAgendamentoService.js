@@ -8,7 +8,6 @@ const {
 } = require("./matrixCampanhaService");
 
 const timersAgendamentos = new Map();
-
 const MAX_TIMEOUT_MS = 2147483647;
 
 function obterId(valor) {

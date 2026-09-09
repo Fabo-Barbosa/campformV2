@@ -308,6 +308,26 @@ button:focus {
   color: #ffffff;
 }
 
+#search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+#search-results .dropdown-item {
+  cursor: pointer;
+}
+
+/* Destaque visual ao passar o mouse */
+#search-results .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #16181b;
+}
+
 @media (max-width: 768px) {
   .variable-row .btn {
     margin-top: 4px;

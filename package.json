@@ -10,5 +10,19 @@
     "mysql2": "^3.22.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/connect-flash": "^0.0.40",
+    "@types/express": "^5.0.6",
+    "@types/express-handlebars": "^5.3.1",
+    "@types/express-session": "^1.19.0",
+    "@types/mongoose": "^5.11.96",
+    "@types/mysql2": "github:types/mysql2",
+    "@types/node": "^26.4.1",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
   }
 }

@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
 <div class="col-10">
 <div class="mb-4 d-flex justify-content-between">
-  <h2 class="page-title">Contas do Matrix
+  <h2 class="h4 mb-1 page-title">Contas do Matrix
   </h2>
   <a href="/admin/account/register">
     <img src="/img/more.png"
@@ -19,10 +19,10 @@
       <th class="col-6">Descrição</th>
     </tr>
   </thead>
-  {{#each accounts}}
     <tbody>
+      {{#each accounts}}
       <tr>
-        <td class="col-1 d-flex">
+        <td class="col-1">
           {{> delete-button
             deleteUrl=(concat "/admin/account/delete/" this._id)
             itemName=this.name
@@ -39,9 +39,9 @@
         <td class="col-4">{{this.name}}</th>
         <td class="col-6">{{this.description}}</th>
       </tr>
-    </thead>
-  {{else}}
-  {{/each}}
+      {{else}}
+      {{/each}}
+    </tbody>
 </table>
 {{#if accounts.length}}
     <nav aria-label="Paginação">
