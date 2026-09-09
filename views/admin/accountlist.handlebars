@@ -1,0 +1,73 @@
+<div class="row justify-content-center">
+<div class="col-10">
+<div class="mb-4 d-flex justify-content-between">
+  <h2 class="h4 mb-1 page-title">Contas do Matrix
+  </h2>
+  <a href="/admin/account/register">
+    <img src="/img/more.png"
+      width="30"
+      height="30" alt="Cadastrar novo usuário">
+  </a>
+
+</div>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-active">
+      <th class="col-1">Ação</th>
+      <th class="col-1">Cod</th>
+      <th class="col-4">Nome</th>
+      <th class="col-6">Descrição</th>
+    </tr>
+  </thead>
+    <tbody>
+      {{#each accounts}}
+      <tr>
+        <td class="col-1">
+          {{> delete-button
+            deleteUrl=(concat "/admin/account/delete/" this._id)
+            itemName=this.name
+            itemType="conta"
+          }}
+
+          <a href="/admin/account/edit/{{this._id}}">
+            <img src="/img/edit.png"
+            width="25"
+            height="25" alt="Editar cadastro">
+          </a>
+          </th>
+        <td class="col-1">{{this.cod}}</th>
+        <td class="col-4">{{this.name}}</th>
+        <td class="col-6">{{this.description}}</th>
+      </tr>
+      {{else}}
+      {{/each}}
+    </tbody>
+</table>
+{{#if accounts.length}}
+    <nav aria-label="Paginação">
+      <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item {{#unless hasPrevPage}}disabled{{/unless}}">
+          <a class="page-link" href="/admin/account/list?page={{prevPage}}">Anterior</a>
+        </li>
+
+        <li class="page-item">
+          <span class="page-link">
+            Página {{currentPage}} de {{totalPages}}
+          </span>
+        </li>
+
+        <li class="page-item {{#unless hasNextPage}}disabled{{/unless}}">
+          <a class="page-link" href="/admin/account/list?page={{nextPage}}">Próxima</a>
+        </li>
+
+      </ul>
+    </nav>
+  {{else}}
+    <div class="alert alert-info">
+      Nenhum item encontrado.
+    </div>
+  {{/if}}
+</div>
+
+</div>

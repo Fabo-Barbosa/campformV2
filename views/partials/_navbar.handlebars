@@ -1,0 +1,112 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img
+        src="/img/logo.png"
+        width="30"
+        height="30"
+        class="d-inline-block align-top"
+        alt=""
+      />
+      CampForm
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    {{#if user}}
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownCamp"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Campanhas
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a
+                  class="dropdown-item"
+                  href="/mensagem-hsm/campanha/nova"
+                >Nova Campanha</a></li>
+              <li><a
+                  class="dropdown-item"
+                  href="/discador/campanha/nova"
+                >Discador 3C</a></li>
+              <li><a
+                  class="dropdown-item"
+                  href="/template/hsm/list"
+                >HSMs</a></li>
+              <div class="dropdown-divider"></div>
+              <li><a
+                  class="dropdown-item"
+                  href="/mensagem-hsm/log/list"
+                >Histórico</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/report/analitico">Relatório</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownConfig"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Configurações
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {{#if (eq user.eAdmin 1)}}
+                <li><a
+                    class="dropdown-item"
+                    href="/admin/user/list"
+                  >Usuários</a></li>
+                <li><a
+                    class="dropdown-item"
+                    href="/admin/account/list"
+                  >Contas</a></li>
+                <li><a
+                    class="dropdown-item"
+                    href="/admin/flow/list"
+                  >Flow</a></li>
+              {{/if}}
+              <div class="dropdown-divider"></div>
+              <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="position-relative col-2 p-0">
+          <input
+            id="nav-search-input"
+            class="form-control"
+            type="search"
+            placeholder="Pesquisar menu..."
+            aria-label="Search"
+            autocomplete="off"
+          />
+          <div
+            id="search-results"
+            class="dropdown-menu w-100 shadow"
+            style="display: none;"
+          ></div>
+        </div>
+      </div>
+    {{else}}
+    {{/if}}
+  </div>
+</nav>

@@ -1,0 +1,250 @@
+{{#each erros}}
+  <div class="alert alert-danger">{{this.texto}}</div>
+{{else}}
+{{/each}}
+<div class="container page-wrapper">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="page-title">Criar e Enviar Campanhas</h1>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- FORM PRINCIPAL -->
+    <div class="col-lg-7">
+      <div class="campaign-card">
+        <form action="/mensagem-hsm/campanha/send" method="POST" id="campaignForm">
+          <!-- PRIMEIROS CAMPOS -->
+          <div class="mb-4">
+            <label class="form-label section-label">Status de Contrato</label>
+
+            <div class="status-grid">
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input statusContrato"
+                    type="checkbox"
+                    value="A"
+                    id="statusAtivo"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusAtivo"
+                  >Ativo</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input statusContrato"
+                    type="checkbox"
+                    value="B"
+                    id="statusBloqueado"
+                  />
+                  <label
+                    class="form-check-label statusContrato"
+                    for="statusBloqueado"
+                  >Bloqueado</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input statusContrato"
+                    type="checkbox"
+                    value="C"
+                    id="statusCancelado"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusCancelado"
+                  >Cancelado</label>
+                </div>
+              </div>
+
+              <div class="status-option">
+                <div class="form-check">
+                  <input
+                    class="form-check-input statusContrato"
+                    type="checkbox"
+                    value="S"
+                    id="statusSuspenso"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="statusSuspenso"
+                  >Suspenso</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="faixaInicial" class="form-label section-label">Faixa
+                  de Atraso Inicial</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="faixaInicial"
+                  placeholder="Ex: 1"
+                  min="0"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label for="faixaFinal" class="form-label section-label">Faixa
+                  de Atraso Final</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="faixaFinal"
+                  placeholder="Ex: 30"
+                  min="0"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÃO CONSULTAR -->
+          <div class="mb-4 d-grid d-md-flex">
+            <button
+              type="button"
+              class="btn btn-secondary px-4"
+              id="btnConsultar"
+            >
+              Consultar
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- RESTANTE DOS CAMPOS -->
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="tipoenvio" class="form-label section-label">Tipo de
+                Envio</label>
+              <select
+                class="form-control mb-2"
+                id="tipoenvio"
+                name="sendtype"
+                required
+              >
+                <option value="" selected disabled>Selecione um tipo de envio</option>
+                {{#each sendtypes}}
+                  <option value="{{this.cod}}">{{this.name}}</option>
+                {{else}}
+                  <option value="" selected disabled>Não há tipos de envios.</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="col-12 container-conta">
+              <label for="conta" class="form-label section-label">Conta</label>
+              <select
+                class="form-control mb-2"
+                id="conta"
+                name="conta"
+                required
+              >
+                <option value="" selected disabled>Selecione uma conta</option>
+                {{#each contas}}
+                  <option value="{{this._id}}">{{this.name}}</option>
+                {{else}}
+                  <option value="" selected disabled>Não há contas cadastradas.</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="col-12 container-fluxo" id="containerFluxo">
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-md-6">
+                <label for="hsm" class="form-label section-label">Selecione o
+                  HSM</label>
+                <select class="form-control" id="hsm" name="hsm" required>
+                  <option value="">-- Selecione um HSM --</option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="divisoes" class="form-label section-label">Dividir e
+                  Agendar</label>
+                <select
+                  class="form-control"
+                  id="divisoes"
+                  name="divisoesAgendamentos"
+                >
+                  <option value="0">Disparar imediatamente</option>
+                  <option value="1">Agendar 1 disparo</option>
+                  <option value="2">Agendar 2 disparos</option>
+                  <option value="3">Agendar 3 disparos</option>
+                </select>
+              </div>
+              <div id="containerAgendamentos"></div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="forcaCampanha"
+                  name="forca"
+                />
+                <label class="form-check-label" for="forcaCampanha">
+                  Forçar HSM em atendimentos abertos?
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end mt-3">
+              <button type="submit" class="btn orange-submit px-4">
+                Iniciar Campanha
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIDEBAR / RESUMO -->
+    <div class="col-lg-5">
+      <div class="summary-card">
+        <h2 class="summary-title">Resumo da Campanha</h2>
+        <hr />
+
+        <div class="summary-block">
+          <span class="summary-label">Mensagem HSM Selecionada:</span>
+          <div class="summary-value" id="resumoCategoriaHsm">
+            <strong>Categoria:</strong>
+            N/A
+          </div>
+          <div class="summary-muted mt-2" id="resumoHsmContent">
+            Selecione um HSM válido.
+          </div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Pré-Visualização de clientes:</span>
+          <div class="summary-muted" id="resumoClientesPreview">
+            Visualizar os primeiros nomes da consulta
+          </div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Pessoas na Consulta (Estimativa):</span>
+          <div class="summary-highlight" id="resumoTotalPessoas">0</div>
+        </div>
+
+        <div class="summary-block">
+          <span class="summary-label">Valor Estimado da Campanha (R$):</span>
+          <div class="summary-price" id="resumoPriceCampanha">R$ 0,00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

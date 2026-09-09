@@ -1,0 +1,88 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    {{#each erros}}
+      <div class="alert alert-danger">{{this.texto}}</div>
+    {{else}}
+    {{/each}}
+
+    <h2 class="mb-4 page-title">Cadastrar Usuário</h2>
+    <div class="card border-light mb-3">
+      <div class="card-body">
+        <form action="/admin/user/register" method="post">
+          <div class="form-group">
+            <label for="inputName">Nome completo</label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputName"
+              name="name"
+              placeholder="Ruam Alberto de Souza"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="inputEmail"
+              name="email"
+              placeholder="example@email.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="inputUserName">Nome de usuário</label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputUserName"
+              name="username"
+              placeholder="alex.bastos"
+              required
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputPassword">Senha</label>
+              <input
+                oninput="verifyPassword()"
+                type="password"
+                class="form-control"
+                name="password"
+                id="inputPassword"
+                required
+                data-toggle="popover"
+                data-placement="top"
+                data-content="* 8 caracteres"
+                data-template='<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div style="color: red" class="popover-body"></div></div>'
+              />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword2">Repita a senha</label>
+              <input
+                type="password"
+                class="form-control"
+                name="password2"
+                id="inputPassword2"
+                required
+              />
+            </div>
+          </div>
+          <div class="admin-submit">
+            <div>
+              <label for="inputEadmin">Administrador</label>
+              <input type="checkbox" name="eAdmin" id="inputEadmin" />
+            </div>
+            <button
+              disabled=""
+              type="submit"
+              id="btnRegister"
+              class="btn orange-submit"
+            >Registrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

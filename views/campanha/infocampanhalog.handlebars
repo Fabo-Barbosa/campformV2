@@ -1,0 +1,143 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <h2 class="page-title">Informações da Campanha
+    </h2>
+    <div id="accordion">
+      <div class="card mb-4">
+        <div class="card-header" id="headingOne">
+          <button
+            class="btn btn-light"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          ><strong>
+              Informações gerais
+            </strong>
+          </button>
+        </div>
+        <div
+          id="collapseOne"
+          class="collapse show"
+          aria-labelledby="headingOne"
+        >
+          <div class="card-body">
+            <p class="card-text"><strong>Status: </strong><span
+                class="{{statusColorClassStyle log.status}}"
+              >{{log.status}}</span></p>
+            <p class="card-text"><strong>Usuário:
+              </strong>{{log.userId.username}}</p>
+            <p class="card-text"><strong>Data de registro:
+              </strong>{{formatDateTime log.createdAt}}</p>
+            <p class="card-text"><strong>Data de finalização:
+              </strong>{{formatDateTime log.finalizadoEm}}</p>
+            <p><strong>Agendado para: </strong>
+              {{#if log.agendadoPara}}
+                {{formatDateTime log.agendadoPara}}
+              {{else}}
+                Não há agendamento, campanha imediata.
+              {{/if}}
+            </p>
+            <p><strong>Tipo de envio: </strong>{{#if (eq log.sendType "1")}}
+                Direcionado a um fluxo
+              {{else}} Notificação {{/if}}</p>
+            <p><strong>Envio forçado: </strong>{{#if (eq log.forcaEnvio true)}}
+                Sim
+              {{else}} Não {{/if}}</p>
+            <div class="row">
+              <p class="col-2"><strong>Total: </strong>{{log.total}}</p>
+              <p class="col-2"><strong>Sucessos: </strong>{{log.sucessos}}</p>
+              <p class="col-2"><strong>Erros: </strong>{{log.erros}}</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header" id="headingTwo">
+          <button
+            class="btn btn-light"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseTwo"
+            aria-expanded="true"
+            aria-controls="collapseTwo"
+          >
+            <strong>Conta</strong>
+          </button>
+        </div>
+        <div
+          id="collapseTwo"
+          class="collapse"
+          aria-labelledby="headingTwo"
+        >
+          <div class="card-body">
+            <p class="card-text"><strong>Codigo:
+              </strong>{{log.conta.cod}}</p>
+            <p class="card-text"><strong>Nome: </strong>{{log.conta.name}}</p>
+            <p class="card-text"><strong>Descrição:
+              </strong>{{log.conta.description}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header" id="headingThree">
+          <button
+            class="btn btn-light"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseThree"
+            aria-expanded="true"
+            aria-controls="collapseThree"
+          >
+            <strong>Fluxo</strong>
+          </button>
+        </div>
+        <div
+          id="collapseThree"
+          class="collapse"
+          aria-labelledby="headingThree"
+        >
+          <div class="card-body">
+            {{#if log.flow}}
+              <p class="card-text"><strong>Codigo:
+                </strong>{{log.flow.cod}}</p>
+              <p class="card-text"><strong>Nome:
+                </strong>{{log.flow.name}}</p>
+              <p class="card-text"><strong>Descrição:
+                </strong>{{log.flow.description}}</p>
+            {{else}}
+              <p>A campanha não foi enviada por meio de um fluxo.</p>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingFour">
+          <button
+            class="btn btn-light"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseFour"
+            aria-expanded="true"
+            aria-controls="collapseFour"
+          >
+            <strong>Hsm</strong>
+          </button>
+        </div>
+        <div
+          id="collapseFour"
+          class="collapse"
+          aria-labelledby="headingFour"
+        >
+          <div class="card-body">
+            <p class="card-text"><strong>Codigo:
+              </strong>{{log.hsmId.cod}}</p>
+            <p class="card-text"><strong>Categoria:
+              </strong>{{log.hsmId.type}}</p>
+            <p class="card-text"><strong>Nome: </strong>{{log.hsmId.name}}</p>
+            <p class="card-text"><strong>Conteúdo:
+              </strong>{{log.hsmId.content}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

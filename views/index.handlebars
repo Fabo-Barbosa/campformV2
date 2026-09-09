@@ -1,0 +1,152 @@
+<div id="logsRefreshFeedback"></div>
+<div class="row justify-content-center">
+  <div class="col-10 mb-4">
+    {{#if erro}}
+      <div class="alert alert-danger">{{erro.erro}}</div>
+    {{else}}
+    {{/if}}
+    <div class="h4 mb-1 d-flex justify-content-between">
+      <h2 class="page-title">Campanhas Recentes
+      </h2>
+      <a href="/mensagem-hsm/campanha/nova" class="mt-4">
+        <img
+          src="/img/more.png"
+          width="30"
+          height="30"
+          alt="Cadastrar novo Hsm"
+        />
+      </a>
+
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-active">
+          <th class="col-1">Ação</th>
+          <th class="col-1">hsm</th>
+          <th class="col-2">Data Inicio</th>
+          <th class="col-2">Data Final</th>
+          <th class="col-1">total</th>
+          <th class="col-1">sucessos</th>
+          <th class="col-1">erros</th>
+          <th class="col-2">Usuário</th>
+          <th class="col-1">Status</th>
+        </tr>
+      </thead>
+      <tbody id="logsTableBody">
+        {{#each recents}}
+          <tr data-log-id="{{this._id}}">
+            <td class="col-1" data-field="action">
+
+              {{#if
+                (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))
+              }}
+                {{> cancel-button
+                  cancelUrl=(concat "/mensagem-hsm/log/cancel/" this._id)
+                  itemType="esse Agendamento"
+                }}
+              {{else}}
+              {{/if}}
+              <a href="/mensagem-hsm/log/info/{{this._id}}">
+                <img
+                  src="/img/estatisticas.png"
+                  width="25"
+                  height="25"
+                  alt="Visualizar informações de log"
+                />
+              </a>
+            </td>
+            <td class="col-1" data-field="hsm">{{this.hsmId.cod}}</td>
+            <td class="col-2" data-field="dataInicio">{{formatDateTime
+                this.createdAt
+              }}</td>
+            <td class="col-2" data-field="dataFinal">{{formatDateTime
+                this.finalizadoEm
+              }}</td>
+            <td class="col-1" data-field="total">{{this.total}}</td>
+            <td class="col-1" data-field="sucessos">{{this.sucessos}}</td>
+            <td class="col-1" data-field="erros">{{this.erros}}</td>
+            <td class="col-2" data-field="usuario">{{this.userId.username}}</td>
+            <td class="col-1" data-field="status"><span
+                class="{{statusColorBadge this.status}}"
+              >{{this.status}}</span></td>
+          </tr>
+        {{else}}
+        {{/each}}
+      </tbody>
+    </table>
+    {{#if recents.length}}{{else}}
+      <div class="alert alert-info">
+        Nenhum item encontrado.
+      </div>
+    {{/if}}
+  </div>
+  <div class="col-10 mt-4">
+    <div class="mb-4 d-flex justify-content-between">
+      <h2 class="h4 mb-1 page-title">Agendamentos
+      </h2>
+
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-active">
+          <th class="col-1">Ação</th>
+          <th class="col-1">hsm</th>
+          <th class="col-2">Data Inicio</th>
+          <th class="col-2">Data Final</th>
+          <th class="col-1">total</th>
+          <th class="col-1">sucessos</th>
+          <th class="col-1">erros</th>
+          <th class="col-2">Usuário</th>
+          <th class="col-1">Status</th>
+        </tr>
+      </thead>
+      <tbody id="logsTableBody">
+        {{#each schedule}}
+          <tr data-log-id="{{this._id}}">
+            <td class="col-1" data-field="action">
+
+              {{#if
+                (or (eq this.status "AGUARDANDO") (eq this.status "ENVIANDO"))
+              }}
+                {{> cancel-button
+                  cancelUrl=(concat "/mensagem-hsm/log/cancel/" this._id)
+                  itemType="esse Agendamento"
+                }}
+              {{else}}
+              {{/if}}
+              <a href="/mensagem-hsm/log/info/{{this._id}}">
+                <img
+                  src="/img/estatisticas.png"
+                  width="25"
+                  height="25"
+                  alt="Visualizar informações de log"
+                />
+              </a>
+            </td>
+            <td class="col-1" data-field="hsm">{{this.hsmId.cod}}</td>
+            <td class="col-2" data-field="dataInicio">{{formatDateTime
+                this.createdAt
+              }}</td>
+            <td class="col-2" data-field="dataFinal">{{formatDateTime
+                this.finalizadoEm
+              }}</td>
+            <td class="col-1" data-field="total">{{this.total}}</td>
+            <td class="col-1" data-field="sucessos">{{this.sucessos}}</td>
+            <td class="col-1" data-field="erros">{{this.erros}}</td>
+            <td class="col-2" data-field="usuario">{{this.userId.username}}</td>
+            <td class="col-1" data-field="status"><span
+                class="{{statusColorBadge this.status}}"
+              >{{this.status}}</span></td>
+          </tr>
+        {{else}}
+        {{/each}}
+      </tbody>
+    </table>
+    {{#if schedule.length}}{{else}}
+      <div class="alert alert-info">
+        Nenhum item encontrado.
+      </div>
+    {{/if}}
+  </div>
+
+</div>

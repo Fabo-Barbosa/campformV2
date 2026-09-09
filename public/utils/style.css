@@ -1,0 +1,357 @@
+body {
+  background: #f3f3f3;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1f2937;
+}
+
+.login-container {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-login {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+.toggle-password {
+  cursor: pointer;
+}
+
+.orange-submit {
+  color: white;
+  background-color: orange;
+  cursor: pointer;
+}
+
+.admin-submit {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.formulario-container {
+  background-color: white;
+}
+
+img,
+a {
+  margin: 0;
+  padding: 0;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.btn-delete {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: inherit; /* Mantém a cor do texto do container */
+  box-shadow: none; /* Remove sombras do Bootstrap 5 */
+  cursor: pointer;
+}
+
+.page-wrapper {
+  padding: 10px 0;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  color: #1f2937;
+}
+
+.campaign-card,
+.summary-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+}
+
+.campaign-card {
+  padding: 2rem;
+}
+
+.summary-card {
+  padding: 1.75rem;
+  height: 100%;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #1f2937;
+}
+
+.form-label.section-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.form-control {
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid #d6d9de;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  gap: 16px;
+}
+
+.status-option {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 12px;
+  background: #fafafa;
+  height: 100%;
+}
+
+.status-option .form-check-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.divider {
+  border-top: 1px solid #ececec;
+  margin: 1.5rem 0;
+}
+
+.summary-title {
+  color: #584233;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-block + .summary-block {
+  margin-top: 1.25rem;
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+
+.summary-value {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.summary-highlight {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.summary-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #b42318;
+}
+
+.summary-muted {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas de tamanhos iguais */
+  gap: 10px; /* Espaço entre colunas */
+}
+
+.variables-container {
+  max-width: 100%;
+}
+
+.icon_char {
+  font-size: 30px;
+  font-weight: 900;
+  margin: 0 auto;
+  color: #3a3f4b;
+}
+
+.button_clear {
+  all: unset;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+.variable-row {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.variable-row + .variable-row {
+  margin-top: 8px;
+}
+
+.status-campanha {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.btn-link {
+  color: #111827;
+  text-decoration: none;
+  background: none;
+  outline: none;
+}
+
+.btn-link:hover {
+  color: #111827;
+  text-decoration: none;
+}
+
+.btn-adicao {
+  background-color: transparent; /* Cor de fundo (verde) */
+  color: #201d1d; /* Cor do sinal de + (branco) */
+  border: none;
+  border-radius: 50%; /* Deixa o botão perfeitamente redondo */
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease; /* Suaviza a animação ao interagir */
+}
+
+.icone-mais {
+  font-size: 18px;
+  line-height: 1; /* Garante que o símbolo fique centralizado perfeitamente */
+  font-weight: 300; /* Deixa o traço do + mais fino e minimalista */
+}
+
+/* Efeito ao clicar */
+.btn-adicao:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.status-campanha-cancelado {
+  background-color: #facc15;
+  color: #111827;
+}
+
+.status-campanha-enviando {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.status-campanha-finalizado {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.status-campanha-abortado {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.status-campanha-aguardando {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
+#search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+#search-results .dropdown-item {
+  cursor: pointer;
+}
+
+/* Destaque visual ao passar o mouse */
+#search-results .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #16181b;
+}
+
+@media (max-width: 768px) {
+  .variable-row .btn {
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .status-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .campaign-card,
+  .summary-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
